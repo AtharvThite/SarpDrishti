@@ -1,0 +1,11 @@
+flask
+flask-cors
+pymongo
+python-dotenv
+tensorflow==2.15.0
+Pillow
+numpy
+cloudinary
+PyJWT
+bcrypt
+gunicorn

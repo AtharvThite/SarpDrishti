@@ -1,0 +1,37 @@
+# Virtual Environments
+venv/
+env/
+.venv/
+ENV/
+
+# Environment Variables
+.env
+.env.local
+
+# Byte-compiled / Optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Temporary Uploads
+temp_uploads/
+
+# ML Weights (Ignore large model files)
+ml/weights/*.keras
+ml/weights/*.h5
+ml/weights/*.hdf5
+
+# IDEs / Editor configurations
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
