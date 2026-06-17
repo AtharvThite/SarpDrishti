@@ -11,6 +11,27 @@ SarpDrishti is an intelligent Indian snake identification and emergency response
 
 ---
 
+## 🧠 Machine Learning Model
+
+The core of SarpDrishti's identification engine is a custom-trained **EfficientNetB3** model, specifically fine-tuned for Indian snake species.
+
+### 🐍 Identifiable Species (13 Classes)
+The model can currently identify the following common snakes:
+- **Venomous:** Common Krait, King Cobra, Monocled Cobra, Russell's Viper, Saw-scaled Viper, Spectacled Cobra
+- **Non-Venomous:** Banded Racer, Checkered Keelback, Common Rat Snake, Common Sand Boa, Common Trinket, Green Tree Vine, Indian Rock Python
+
+### 📊 Model Performance & Metrics
+- **Architecture:** EfficientNetB3
+- **Test Accuracy:** `[INSERT ACCURACY %]`
+- **Validation Loss:** `[INSERT LOSS]`
+- **Additional Metrics:** `[INSERT F1-SCORE / PRECISION / RECALL]`
+
+### 📓 Training Details & Credits
+- **Dataset Credits:** Special thanks to `https://github.com/arjun921/Indian-Snakes-Dataset.git` for providing the comprehensive image dataset used to train this model.
+- **Colab Notebook:** The full training pipeline, data augmentation steps, and model export process can be explored in the [Google Colab Notebook](https://colab.research.google.com/drive/1eP6IZTfh4J5ARwcC1oaoP-5wPeuWF3ui?usp=sharing).
+
+---
+
 ## 🛠 Technology Stack
 
 ### Frontend
