@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { ChevronDown, RotateCw, Sparkles, Cloud, Sun, Trophy, AlertCircle } from "lucide-react";
+import WhichSnakeGame from "../components/WhichSnakeGame";
+import SpotTheDifference from "../components/SpotTheDifference";
 
 const MYTHS = [
-  { myth: "Cobras are attracted to milk and music.", fact: "False. Snakes cannot digest milk and are deaf to airborne sounds — they react to movement, not music." },
-  { myth: "All snakes are venomous.", fact: "False. Of ~300 snake species in India, only about 60 are venomous and only ~15 are medically significant." },
-  { myth: "You should suck out the venom after a bite.", fact: "False and dangerous. This can introduce infection. Immobilize the limb and get to a hospital immediately." },
-  { myth: "Snakes attack people unprovoked.", fact: "Snakes prefer to flee. Most bites are defensive when the snake feels threatened." },
-  { myth: 'A two-headed snake (Sand Boa) has supernatural powers.', fact: "False. The Red Sand Boa has a blunt tail resembling a head. Myths fuel illegal wildlife trade." },
+  { myth: "Snakes drink milk", fact: "Fact: Snakes are reptiles and do not naturally drink milk. They are carnivores and cannot properly digest dairy products. During festivals like Nag Panchami, snakes may drink milk only because they are dehydrated, not because they like it." },
+  { myth: "Snakes dance to a snake charmer's flute", fact: "Fact: Snakes do not hear airborne sounds the way humans do because they lack external ears. What appears to be 'dancing' is actually the snake following the movement of the flute and the charmer." },
+  { myth: "A snake remembers a person's face and takes revenge", fact: "Fact: Snakes do not have the cognitive ability to recognize and remember human faces for revenge. This is a widespread superstition with no scientific basis." },
+  { myth: "If one snake is killed, its mate will come looking for revenge", fact: "Fact: Snakes do not form lifelong partnerships or seek revenge. Another snake may be found nearby simply because both occupy the same habitat." },
+  { myth: "All snakes are venomous", fact: "Fact: India has over 300 snake species, but only a small fraction are dangerously venomous. Most Indian snakes are non-venomous and harmless to humans." },
+  { myth: "Baby snakes are more dangerous than adult snakes", fact: "Fact: Baby venomous snakes can inject venom, but they are not necessarily more dangerous than adults. Adult snakes generally possess larger venom glands and can deliver more venom." },
+  { myth: "Snakes chase humans", fact: "Fact: Snakes usually avoid humans. When a snake appears to chase someone, it is often trying to escape toward its shelter, which may happen to be in the same direction." },
+  { myth: "Applying a tourniquet or cutting a snakebite wound helps", fact: "Fact: These methods are dangerous and can worsen the injury. The correct response is to keep the victim calm, immobilize the affected limb, and seek immediate medical attention." },
+  { myth: "Snake stones can remove venom", fact: "Fact: So-called 'snake stones' have no scientific ability to absorb or neutralize venom. Antivenom administered in a hospital is the only proven treatment for serious venomous snakebites." },
+  { myth: "Cobras carry a magical gem (Nagmani)", fact: "Fact: The 'Nagmani' is a myth from folklore. No snake species possesses or produces any magical gem." },
+  { myth: "Snakes hypnotize their prey", fact: "Fact: Snakes do not hypnotize prey. Animals may appear frozen due to fear or confusion, not because of any hypnotic power." },
+  { myth: "Touching a snake causes instant death", fact: "Fact: Most snakes are harmless. A bite from a non-venomous snake is usually not life-threatening, though it may still require medical care to prevent infection." },
+  { myth: "Snakes can sting with their tails", fact: "Fact: Indian snakes bite using their mouths. They do not have venomous stingers in their tails." },
+  { myth: "A snake crossing your path is a bad omen", fact: "Fact: This is a cultural belief and has no scientific basis. A snake crossing a path is simply an animal moving through its habitat." },
+  { myth: "Killing snakes protects people", fact: "Fact: Snakes help control rodent populations and play an important role in ecosystems. Unnecessary killing of snakes can harm ecological balance." }
 ];
 
 const MONTHS = [
@@ -33,6 +45,7 @@ const QUIZ = [
 
 export default function AwarenessPage() {
   const [openMyth, setOpenMyth] = useState(0);
+  const [showAllMyths, setShowAllMyths] = useState(false);
   const [quizIdx, setQuizIdx] = useState(0);
   const [answers, setAnswers] = useState([]);
   const [showResult, setShowResult] = useState(false);
@@ -66,7 +79,7 @@ export default function AwarenessPage() {
         <section>
           <h2 className="font-display text-3xl font-bold text-[#1A3A2A] fade-up">Common Myths vs Facts</h2>
           <div className="mt-5 space-y-3 stagger-children">
-            {MYTHS.map((item, index) => (
+            {(showAllMyths ? MYTHS : MYTHS.slice(0, 5)).map((item, index) => (
               <div key={index} className="sd-card overflow-hidden fade-up">
                 <button type="button" onClick={() => setOpenMyth(openMyth === index ? -1 : index)}
                   className="flex w-full items-start justify-between gap-3 p-5 text-left hover:bg-black/[0.01] transition-colors">
@@ -87,7 +100,21 @@ export default function AwarenessPage() {
               </div>
             ))}
           </div>
+          
+          {!showAllMyths && MYTHS.length > 5 && (
+            <div className="mt-6 flex justify-center">
+              <button 
+                onClick={() => setShowAllMyths(true)}
+                className="rounded-full border border-[#E9E3D7] bg-white px-6 py-2.5 text-sm font-semibold text-[#1A3A2A] transition-all hover:border-[#1A3A2A] hover:bg-black/5"
+              >
+                View More Myths ({MYTHS.length - 5})
+              </button>
+            </div>
+          )}
         </section>
+
+        {/* Lookalikes / Spot the Difference */}
+        <SpotTheDifference />
 
         {/* Snake Season */}
         <section className="mt-14 fade-up">
@@ -176,6 +203,9 @@ export default function AwarenessPage() {
             )}
           </div>
         </section>
+
+        {/* Dynamic Which Snake Am I Game */}
+        <WhichSnakeGame />
       </div>
     </div>
   );

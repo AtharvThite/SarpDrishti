@@ -1,9 +1,54 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { MapPin, Search, Locate } from "lucide-react";
+import { MapPin, Search, Locate, Heart, Shield, Award } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import RescuerCard from "../components/RescuerCard";
+
+const RESCUE_STORIES = [
+  {
+    title: "School Visit Prevented",
+    text: "A 6-foot Rat Snake was rescued from a primary school in Pune and safely released into a nearby forest habitat, ensuring safety for both students and the snake.",
+    icon: Shield,
+    color: "#27AE60",
+    bg: "rgba(39,174,96,0.1)"
+  },
+  {
+    title: "Midnight Cobra Call",
+    text: "A Spectacled Cobra found refuge in an office basement during heavy rains. A registered rescuer carefully bagged it without any injury and relocated it.",
+    icon: Award,
+    color: "#E8A020",
+    bg: "rgba(232,160,32,0.1)"
+  },
+  {
+    title: "Residential Krait Rescue",
+    text: "A homeowner spotted a highly venomous Common Krait near their porch. Thanks to SarpDrishti, a rescuer arrived in 15 minutes and safely removed the threat.",
+    icon: Heart,
+    color: "#C0392B",
+    bg: "rgba(192,57,43,0.1)"
+  },
+  {
+    title: "Vine Snake in Garden",
+    text: "A bright green Vine Snake was found resting on a family's balcony plants. A rescuer gently guided it into a cloth bag and relocated it to a nearby wooded area.",
+    icon: Shield,
+    color: "#27AE60",
+    bg: "rgba(39,174,96,0.1)"
+  },
+  {
+    title: "Russell's Viper in Farm",
+    text: "Farmers in Maharashtra spotted a highly venomous Russell's Viper in a sugarcane field. They paused work and called a certified rescuer who safely removed it, preventing a potential tragedy.",
+    icon: Award,
+    color: "#C0392B",
+    bg: "rgba(192,57,43,0.1)"
+  },
+  {
+    title: "Sand Boa near Construction",
+    text: "A harmless Red Sand Boa was mistaken for a dangerous snake at a construction site. SarpDrishti helped identify it quickly, and a local expert safely moved it away from the machinery.",
+    icon: Heart,
+    color: "#E8A020",
+    bg: "rgba(232,160,32,0.1)"
+  }
+];
 
 const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
@@ -11,6 +56,14 @@ export default function RescuersPage() {
   const [rescuers, setRescuers] = useState([]);
   const [district, setDistrict] = useState("");
   const [loading, setLoading] = useState(true);
+  const [storyIdx, setStoryIdx] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setStoryIdx((prev) => (prev + 1) % RESCUE_STORIES.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const fetchRescuers = async (districtName = "") => {
     try {
@@ -82,7 +135,49 @@ export default function RescuersPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
+      {/* ============================================
+          RESCUE STORIES
+          ============================================ */}
+      <section className="mx-auto mt-10 max-w-3xl px-4 lg:px-8 fade-up">
+        <h2 className="font-display text-2xl font-bold text-[#1A3A2A] mb-5 text-center">Hero Rescue Stories</h2>
+        <div className="relative overflow-hidden rounded-2xl border border-black/5 p-6 md:p-8" style={{ background: "linear-gradient(to bottom right, #ffffff, #F9FAFB)" }}>
+          {RESCUE_STORIES.map((story, idx) => (
+            <div 
+              key={idx} 
+              className={`flex flex-col md:flex-row items-center md:items-start gap-6 transition-all duration-500 absolute inset-0 p-6 md:p-8 w-full h-full ${idx === storyIdx ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full pointer-events-none'}`}
+            >
+              <div className="w-16 h-16 shrink-0 rounded-full grid place-items-center mb-4 md:mb-0" style={{ backgroundColor: story.bg, color: story.color }}>
+                <story.icon size={32} />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="font-display text-xl font-bold text-[#1c1c1c] mb-3">{story.title}</h3>
+                <p className="text-base text-[#6B7280] leading-relaxed">{story.text}</p>
+              </div>
+            </div>
+          ))}
+          {/* Spacer to give the absolute container height */}
+          <div className="invisible flex flex-col md:flex-row items-center md:items-start gap-6">
+             <div className="w-16 h-16 shrink-0 mb-4 md:mb-0" />
+             <div className="flex-1">
+               <h3 className="font-display text-xl font-bold mb-3">Placeholder</h3>
+               <p className="text-base leading-relaxed">This is placeholder text to ensure the container is tall enough for the longest possible story. It should wrap onto three lines on mobile screens just to be absolutely certain it doesn't clip content during transitions.</p>
+             </div>
+          </div>
+          
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+            {RESCUE_STORIES.map((_, idx) => (
+              <button 
+                key={idx}
+                onClick={() => setStoryIdx(idx)}
+                className={`h-2 rounded-full transition-all duration-300 ${idx === storyIdx ? 'w-8 bg-[#1A3A2A]' : 'w-2 bg-[#E5E0D2]'}`}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8">
+        <h2 className="font-display text-2xl font-bold text-[#1A3A2A] mb-5">Find a Rescuer</h2>
         <div className="sd-card flex flex-wrap gap-2 p-4">
           <div className="relative min-w-[200px] flex-1">
             <MapPin

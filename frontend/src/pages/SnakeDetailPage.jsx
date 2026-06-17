@@ -8,6 +8,7 @@ import {
   Phone,
   ChevronRight,
   ChevronLeft,
+  Sparkles,
 } from "lucide-react";
 
 import VenomBadge from "../components/VenomBadge";
@@ -244,6 +245,104 @@ export default function SnakeDetailPage() {
                 {snake.behavior}
               </p>
             </section>
+
+            {snake.lifespan_years && (
+              <section className="mt-8">
+                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Biology & Lifecycle</h2>
+                <div className="mt-4 grid sm:grid-cols-2 gap-4">
+                  <div className="rounded-xl bg-white p-4 shadow-sm border border-[#E9E3D7]">
+                    <h3 className="font-semibold text-[#1A3A2A] mb-2">Lifespan</h3>
+                    <p className="text-[#6B7280] text-sm"><strong>Wild:</strong> {snake.lifespan_years.wild} years</p>
+                    <p className="text-[#6B7280] text-sm"><strong>Captivity:</strong> {snake.lifespan_years.captivity} years</p>
+                  </div>
+                  <div className="rounded-xl bg-white p-4 shadow-sm border border-[#E9E3D7]">
+                    <h3 className="font-semibold text-[#1A3A2A] mb-2">Reproduction</h3>
+                    <p className="text-[#6B7280] text-sm"><strong>Type:</strong> {snake.reproduction?.type}</p>
+                    <p className="text-[#6B7280] text-sm"><strong>Clutch Size:</strong> {snake.reproduction?.offspring_per_clutch}</p>
+                    <p className="text-[#6B7280] text-sm"><strong>Season:</strong> {snake.reproduction?.breeding_season}</p>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {snake.ecological_role && (
+              <section className="mt-8">
+                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Ecology & Conservation</h2>
+                <div className="mt-4 space-y-4">
+                  <div className="rounded-xl bg-[#F9FAFB] p-4 border border-[#E5E0D2]">
+                    <h3 className="font-semibold text-[#1A3A2A] mb-1">Ecological Role</h3>
+                    <p className="text-[#6B7280] text-sm">{snake.ecological_role}</p>
+                  </div>
+                  
+                  {snake.benefits_to_humans?.length > 0 && (
+                    <div className="rounded-xl bg-[#F9FAFB] p-4 border border-[#E5E0D2]">
+                      <h3 className="font-semibold text-[#1A3A2A] mb-1">Benefits to Humans</h3>
+                      <ul className="list-disc list-inside text-[#6B7280] text-sm space-y-1 mt-2">
+                        {snake.benefits_to_humans.map((benefit, i) => <li key={i}>{benefit}</li>)}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="rounded-xl bg-white p-4 border border-[#E5E0D2]">
+                      <h3 className="font-semibold text-[#1A3A2A] mb-3">Natural Predators</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {snake.natural_predators?.map((p, i) => (
+                          <span key={i} className="rounded-full bg-[#1A3A2A]/5 text-[#1A3A2A] px-3 py-1 text-xs font-semibold">{p}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="rounded-xl bg-white p-4 border border-[#E5E0D2]">
+                      <h3 className="font-semibold text-[#1A3A2A] mb-3">Conservation Threats</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {snake.conservation_threats?.map((t, i) => (
+                          <span key={i} className="rounded-full bg-[#C0392B]/10 text-[#C0392B] px-3 py-1 text-xs font-semibold">{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {(snake.interesting_facts || snake.did_you_know || snake.myths_and_facts) && (
+              <section className="mt-8">
+                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Fascinating Facts</h2>
+                
+                {snake.did_you_know && (
+                  <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#FDF7EC] to-[#FFFBF5] p-5 shadow-sm border border-[#E8A020]/20 flex items-start gap-4">
+                    <div className="text-[#E8A020] mt-1"><Sparkles size={24} /></div>
+                    <div>
+                      <h3 className="font-bold text-[#E8A020] mb-1">Did You Know?</h3>
+                      <p className="text-[#1c1c1c] font-medium">{snake.did_you_know}</p>
+                    </div>
+                  </div>
+                )}
+
+                {snake.interesting_facts?.length > 0 && (
+                  <ul className="mt-5 space-y-3">
+                    {snake.interesting_facts.map((fact, index) => (
+                      <li key={index} className="flex gap-3 text-[#1c1c1c]">
+                        <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#E8A020]" />
+                        <span>{fact}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                
+                {snake.myths_and_facts?.length > 0 && (
+                  <div className="mt-6 space-y-3">
+                    <h3 className="font-semibold text-[#1A3A2A]">Myths Busted</h3>
+                    {snake.myths_and_facts.map((mf, index) => (
+                      <div key={index} className="rounded-xl bg-white p-4 border border-[#E9E3D7]">
+                        <p className="text-sm text-[#C0392B] font-medium mb-1">Myth: {mf.myth}</p>
+                        <p className="text-sm text-[#27AE60] font-medium">Fact: {mf.fact}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+            )}
           </div>
 
           <aside className="space-y-4 lg:sticky lg:top-24 lg:col-span-2 lg:self-start">
@@ -271,6 +370,17 @@ export default function SnakeDetailPage() {
               </div>
 
               <div className="space-y-2 p-5 text-sm">
+                {snake.human_risk_level && (
+                  <div className="flex justify-between mb-3 border-b border-black/5 pb-3">
+                    <span className="text-[#6B7280]">
+                      Risk Level
+                    </span>
+                    <span className={`font-semibold ${snake.human_risk_level === 'Extreme' ? 'text-[#C0392B]' : snake.human_risk_level === 'Moderate' ? 'text-[#E8A020]' : 'text-[#27AE60]'}`}>
+                      {snake.human_risk_level}
+                    </span>
+                  </div>
+                )}
+
                 {snake.venom_type && (
                   <div className="flex justify-between">
                     <span className="text-[#6B7280]">
@@ -295,8 +405,9 @@ export default function SnakeDetailPage() {
                   <span className="text-[#6B7280]">
                     Active
                   </span>
-                  <span className="font-medium capitalize">
+                  <span className="font-medium capitalize text-right">
                     {snake.active_period}
+                    {snake.peak_activity && <span className="block text-xs font-normal text-[#6B7280] mt-0.5">{snake.peak_activity}</span>}
                   </span>
                 </div>
 

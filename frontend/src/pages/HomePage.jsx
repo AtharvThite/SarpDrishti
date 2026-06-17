@@ -12,6 +12,7 @@ import {
   Zap,
   Eye,
   Heart,
+  Sparkles,
 } from "lucide-react";
 
 import SnakeCard from "../components/SnakeCard";
@@ -19,12 +20,35 @@ import LoadingSpinner from "../components/LoadingSpinner";
 
 const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
+const SNAKE_FACTS = [
+  "King Cobras are the only snakes in the world that build nests for their eggs.",
+  "Some snakes can survive for months without a single meal by drastically lowering their metabolism.",
+  "Snakes don't smell with their noses; they use their forked tongues to gather scent particles.",
+  "Snakes do not have eyelids and cannot blink. They sleep with their eyes open!",
+  "The Indian Rock Python is massive and can easily exceed 5 meters in length.",
+  "The bite of a Common Krait is often completely painless, causing many victims to ignore it.",
+  "Saw-scaled Vipers create a loud, sizzling warning sound by rubbing their specialized serrated scales together.",
+  "Green Vine Snakes have horizontal, keyhole-shaped pupils giving them incredible binocular vision.",
+  "Snakes are completely deaf to airborne sounds but are highly sensitive to vibrations in the ground."
+];
+
 export default function HomePage() {
   const navigate = useNavigate();
 
   const [featured, setFeatured] = useState([]);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [factIdx, setFactIdx] = useState(0);
+
+  useEffect(() => {
+    // Start with a random fact
+    setFactIdx(Math.floor(Math.random() * SNAKE_FACTS.length));
+
+    const interval = setInterval(() => {
+      setFactIdx((prev) => (prev + 1) % SNAKE_FACTS.length);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     axios
@@ -40,7 +64,7 @@ export default function HomePage() {
           ].filter(Boolean)
         );
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const handleFile = (event) => {
@@ -174,61 +198,22 @@ export default function HomePage() {
       </section>
 
       {/* ============================================
-          QUICK IDENTIFY CARD
+          AMAZING SNAKE FACTS BANNER
           ============================================ */}
-      <section className="mx-auto -mt-14 max-w-5xl px-4 lg:px-8 relative z-20">
-        <div className="sd-card p-6 md:p-8 fade-up hover-lift glass-light">
-          <div className="mb-5 flex items-center gap-2">
-            <Camera
-              className="text-[#E8A020] floating"
-              size={24}
-            />
-            <h2 className="font-display text-2xl font-semibold text-[#1A3A2A]">
-              Quick Identify
-            </h2>
+      <section className="mx-auto mt-14 max-w-5xl px-4 lg:px-8 relative z-10">
+        <div className="rounded-2xl border border-[#E8A020]/20 bg-gradient-to-r from-[#FDF7EC] to-[#FFFBF5] p-5 shadow-sm fade-up flex items-center gap-4">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#E8A020]/10 text-[#E8A020]">
+            <Sparkles size={24} />
           </div>
-
-          <label
-            htmlFor="quick-upload"
-            className="block cursor-pointer rounded-xl border-2 border-dashed border-[#E8A020]/40 bg-gradient-to-br from-[#FDF7EC] via-white to-[#FDF7EC] p-10 text-center transition-all duration-500 hover:bg-gradient-to-br hover:from-[#FCEFD2] hover:to-[#FDF7EC] hover:border-[#E8A020] hover:shadow-[inset_0_2px_20px_rgba(232,160,32,0.1)] group"
-            data-testid="quick-upload-area"
-          >
-            {loading ? (
-              <LoadingSpinner />
-            ) : preview ? (
-              <img
-                src={preview}
-                alt="preview"
-                className="mx-auto max-h-48 rounded-lg shadow-lg"
-              />
-            ) : (
-              <>
-                <div className="mx-auto w-fit rounded-full bg-gradient-to-br from-[#E8A020]/10 to-[#E8A020]/5 p-4 transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg">
-                  <Upload
-                    className="text-[#1A3A2A]/60 group-hover:text-[#E8A020] transition-colors duration-300"
-                    size={42}
-                  />
-                </div>
-
-                <p className="mt-4 font-semibold text-[#1A3A2A] text-lg group-hover:text-[#E8A020] transition-colors duration-300">
-                  Drop a snake photo here
-                </p>
-
-                <p className="text-sm text-[#6B7280] mt-1">
-                  or click to browse · JPG, PNG, WEBP
-                </p>
-              </>
-            )}
-
-            <input
-              id="quick-upload"
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFile}
-              data-testid="quick-upload-input"
-            />
-          </label>
+          <div className="flex-1 overflow-hidden relative h-12 flex items-center">
+            <p
+              key={factIdx}
+              className="font-display font-medium text-[#1A3A2A] sm:text-lg animate-slide-up-fade absolute w-full"
+            >
+              <span className="font-bold text-[#E8A020] mr-2">Did You Know?</span>
+              {SNAKE_FACTS[factIdx]}
+            </p>
+          </div>
         </div>
       </section>
 

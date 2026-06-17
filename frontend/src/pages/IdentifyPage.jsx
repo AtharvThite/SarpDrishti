@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import axios from "axios";
-import { Camera, Upload, AlertTriangle, ShieldCheck, Phone, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Camera, Upload, AlertTriangle, ShieldCheck, Phone, ChevronDown, ChevronUp, Sparkles, ArrowRight } from "lucide-react";
 import LoadingSpinner from "../components/LoadingSpinner";
 import ConfidenceBar from "../components/ConfidenceBar";
 import FirstAidStep from "../components/FirstAidStep";
@@ -154,6 +154,11 @@ export default function IdentifyPage() {
                     <div><p className="text-xs font-semibold uppercase tracking-wider text-[#6B7280]">Size</p><p className="font-mono">{result.size_range_cm?.min}-{result.size_range_cm?.max} cm</p></div>
                   </div>
                 )}
+              </div>
+              <div className="bg-[#F9FAFB] p-5 border-t border-black/5">
+                <Link to={`/snakes/${result.slug}`} className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1A3A2A] px-5 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:bg-[#2C5742] hover:shadow-lg hover:-translate-y-0.5">
+                  View Full Snake Details <ArrowRight size={16} />
+                </Link>
               </div>
             </div>
           )}
