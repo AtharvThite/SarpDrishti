@@ -7,6 +7,7 @@ import {
   Hospital,
   Phone,
   ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 
 import VenomBadge from "../components/VenomBadge";
@@ -31,6 +32,22 @@ export default function SnakeDetailPage() {
       .catch(console.error);
   }, [id]);
 
+  const galleryImages = snake?.images?.length 
+    ? snake.images 
+    : snake?.thumbnail 
+      ? [snake.thumbnail, snake.thumbnail, snake.thumbnail]
+      : [];
+
+  useEffect(() => {
+    if (galleryImages.length <= 1) return;
+    
+    const interval = setInterval(() => {
+      setActiveImg((prev) => (prev + 1) % galleryImages.length);
+    }, 5000);
+    
+    return () => clearInterval(interval);
+  }, [galleryImages.length]);
+
   if (!snake) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12">
@@ -38,14 +55,6 @@ export default function SnakeDetailPage() {
       </div>
     );
   }
-
-  const galleryImages = snake.images?.length 
-    ? snake.images 
-    : [
-        snake.thumbnail,
-        snake.thumbnail,
-        snake.thumbnail,
-      ];
 
   return (
     <div data-testid={`snake-detail-${snake.slug}`}>
@@ -83,17 +92,38 @@ export default function SnakeDetailPage() {
       <div className="mx-auto max-w-7xl px-4 py-10 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-5">
           <div className="lg:col-span-3">
-            <div className="sd-card overflow-hidden">
+            <div className="sd-card overflow-hidden relative group bg-black/5">
               <img
+                key={activeImg}
                 src={galleryImages[activeImg]}
                 alt={snake.common_name}
-                className="aspect-[16/10] w-full object-cover"
+                className="aspect-[16/10] w-full object-cover fade-in"
                 onError={(e) => {
                   e.currentTarget.src = `https://placehold.co/800x500/1A3A2A/ffffff?text=${encodeURIComponent(
                     snake.common_name
                   )}`;
                 }}
               />
+
+              {/* Navigation Arrows */}
+              {galleryImages.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setActiveImg((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white opacity-0 transition-all duration-300 hover:bg-black/70 group-hover:opacity-100 focus:opacity-100"
+                    aria-label="Previous image"
+                  >
+                    <ChevronLeft size={28} />
+                  </button>
+                  <button
+                    onClick={() => setActiveImg((prev) => (prev + 1) % galleryImages.length)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white opacity-0 transition-all duration-300 hover:bg-black/70 group-hover:opacity-100 focus:opacity-100"
+                    aria-label="Next image"
+                  >
+                    <ChevronRight size={28} />
+                  </button>
+                </>
+              )}
 
               <div className="flex gap-2 p-3">
                 {galleryImages.map((image, index) => (
@@ -138,6 +168,19 @@ export default function SnakeDetailPage() {
                 {snake.distribution?.join(", ")}.{" "}
                 {snake.behavior}
               </p>
+
+              {snake.common_name_regional && Object.keys(snake.common_name_regional).length > 0 && (
+                <div className="mt-4 rounded-xl bg-white p-4 shadow-sm border border-[#E9E3D7]">
+                  <h3 className="font-semibold text-[#1A3A2A] mb-2">Regional Names</h3>
+                  <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#4a4a4a]">
+                    {Object.entries(snake.common_name_regional).map(([lang, name]) => (
+                      <span key={lang}>
+                        <strong className="capitalize text-[#1c1c1c]">{lang}:</strong> {name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </section>
 
             <section className="mt-8">
@@ -174,19 +217,21 @@ export default function SnakeDetailPage() {
                 <strong>Distribution:</strong>{" "}
                 {snake.distribution?.join(", ")}
               </p>
+            </section>
 
-              <div
-                className="mt-4 grid h-56 place-items-center rounded-xl text-center text-sm text-white"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #1A3A2A 0%, #2C5742 100%)",
-                }}
-              >
-                <span className="rounded-md bg-black/40 px-3 py-1.5 backdrop-blur-sm">
-                  Found across{" "}
-                  {snake.distribution?.join(", ")}{" "}
-                  regions
-                </span>
+            <section className="mt-8">
+              <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">
+                Diet
+              </h2>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {snake.diet?.map((food, index) => (
+                  <span
+                    key={index}
+                    className="rounded-full bg-[#E9E3D7] px-3 py-1 text-sm font-medium text-[#1c1c1c] capitalize"
+                  >
+                    {food}
+                  </span>
+                ))}
               </div>
             </section>
 
@@ -250,10 +295,43 @@ export default function SnakeDetailPage() {
                   <span className="text-[#6B7280]">
                     Active
                   </span>
-                  <span className="font-medium">
+                  <span className="font-medium capitalize">
                     {snake.active_period}
                   </span>
                 </div>
+
+                <div className="flex justify-between">
+                  <span className="text-[#6B7280]">
+                    IUCN Status
+                  </span>
+                  <span className={`font-medium ${
+                    snake.iucn_status === "Least Concern" ? "text-green-600" : "text-amber-600"
+                  }`}>
+                    {snake.iucn_status}
+                  </span>
+                </div>
+
+                {snake.is_protected && (
+                  <div className="flex justify-between">
+                    <span className="text-[#6B7280]">
+                      Protected Status
+                    </span>
+                    <span className="font-medium text-green-600 flex items-center gap-1">
+                      <ShieldCheck size={14} /> Yes
+                    </span>
+                  </div>
+                )}
+                
+                {snake.time_to_symptoms_hours && snake.time_to_symptoms_hours.max > 0 && (
+                  <div className="flex justify-between">
+                    <span className="text-[#6B7280]">
+                      Symptoms in
+                    </span>
+                    <span className="font-medium">
+                      {snake.time_to_symptoms_hours.min}-{snake.time_to_symptoms_hours.max} hrs
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -297,7 +375,7 @@ export default function SnakeDetailPage() {
 
               <ol className="space-y-2 text-sm">
                 {snake.first_aid
-                  .slice(0, 3)
+                  ?.slice(0, 3)
                   .map((step, index) => (
                     <li
                       key={index}
@@ -310,6 +388,12 @@ export default function SnakeDetailPage() {
                     </li>
                   ))}
               </ol>
+
+              {snake.antivenom && snake.antivenom !== "Not required" && (
+                <div className="mt-4 rounded-md bg-[#FDF2F2] p-3 text-sm text-[#C0392B] border border-[#F9DEDC]">
+                  <strong>Antivenom:</strong> {snake.antivenom}
+                </div>
+              )}
 
               <Link
                 to="/emergency"

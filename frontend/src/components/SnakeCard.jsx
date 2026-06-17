@@ -29,6 +29,8 @@ export default function SnakeCard({ snake }) {
           <VenomBadge
             venomous={snake.is_venomous}
             size="sm"
+            isMild={snake.slug === "green-tree-vine"}
+            customText={snake.slug === "green-tree-vine" ? "Mildly venomous - Harmless for humans" : undefined}
           />
         </div>
       </div>
