@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Siren, Check, X, Phone, MapPin, Hospital, Search, Clock, Pill } from "lucide-react";
+import { Siren, Check, X, Phone, MapPin, Hospital, Search, Clock, Pill, RefreshCw } from "lucide-react";
 
 const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
@@ -22,11 +22,30 @@ export default function EmergencyPage() {
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
   const [tab, setTab] = useState("cobra");
-  const [hospitals, setHospitals] = useState([]);
-  const [city, setCity] = useState("");
+  const [location, setLocation] = useState(null);
+  const [locating, setLocating] = useState(true);
+
+  const fetchLocation = () => {
+    setLocating(true);
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          setLocating(false);
+        },
+        (err) => {
+          console.error("Geolocation error:", err);
+          setLocating(false);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      setLocating(false);
+    }
+  };
 
   useEffect(() => {
-    axios.get(`${API}/hospitals`).then((r) => setHospitals(r.data.hospitals || [])).catch(console.error);
+    fetchLocation();
   }, []);
 
   useEffect(() => {
@@ -34,13 +53,6 @@ export default function EmergencyPage() {
     const interval = setInterval(() => setSeconds((v) => v + 1), 1000);
     return () => clearInterval(interval);
   }, [running]);
-
-  const searchHospitals = async () => {
-    try {
-      const r = await axios.get(`${API}/hospitals`, { params: city ? { city } : {} });
-      setHospitals(r.data.hospitals || []);
-    } catch (error) { console.error(error); }
-  };
 
   const activeSnake = BIG_FOUR.find((s) => s.id === tab);
 
@@ -150,33 +162,57 @@ export default function EmergencyPage() {
 
         {/* Hospital Finder */}
         <div className="mt-8">
-          <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Hospital Finder</h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            <div className="relative min-w-[220px] flex-1">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#6B7280]" />
-              <input value={city} onChange={(e) => setCity(e.target.value)} placeholder="Enter your city or district..." className="w-full rounded-xl border border-[#E5E0D2] bg-white py-2.5 pl-9 pr-3 text-sm transition-all duration-300 focus:border-[#E8A020]" />
-            </div>
-            <button onClick={searchHospitals} className="sd-btn-primary">Search</button>
+          <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Find Nearest Hospital</h2>
+          <div className="mt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <p className="text-[#6B7280]">
+              Snakebite victims must be rushed to a government hospital equipped with Anti-Snake Venom (ASV).
+            </p>
+            <button 
+              onClick={fetchLocation} 
+              disabled={locating}
+              className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-[#E8A020] hover:text-[#C88A1A] transition-colors disabled:opacity-50"
+            >
+              <RefreshCw size={14} className={locating ? "animate-spin" : ""} />
+              Refresh Location
+            </button>
           </div>
-          <div className="mt-4 space-y-3 stagger-children">
-            {hospitals.map((hospital) => {
-              const phoneStr = hospital.emergency_number || hospital.general_number || "";
-              return (
-              <div key={hospital._id} className="sd-card flex flex-wrap items-center gap-4 p-4 fade-up">
-                <div className="grid h-12 w-12 place-items-center rounded-2xl" style={{ background: "linear-gradient(135deg, rgba(192,57,43,0.1), rgba(192,57,43,0.05))" }}>
-                  <Hospital className="text-[#C0392B]" size={20} />
-                </div>
-                <div className="min-w-[150px] flex-1">
-                  <p className="font-display text-lg font-semibold">{hospital.name}</p>
-                  <p className="text-sm text-[#6B7280]"><MapPin size={12} className="inline" /> {hospital.district || hospital.city}</p>
-                </div>
-                {phoneStr && (
-                  <a href={`tel:${phoneStr.replace(/\s/g, "")}`} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1A3A2A] hover:text-[#E8A020] transition-colors">
-                    <Phone size={14} /> {phoneStr}
-                  </a>
-                )}
+          
+          <div className="mt-4 overflow-hidden rounded-xl border border-[#E5E0D2] shadow-sm relative bg-[#F7F4EF]">
+            {locating ? (
+              <div className="flex h-[400px] flex-col items-center justify-center text-[#6B7280]">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#E8A020] border-t-transparent mb-4"></div>
+                <p className="font-semibold">Locating you...</p>
               </div>
-            )})}
+            ) : (
+              <iframe
+                title="Nearest Government Hospitals"
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                src={
+                  location 
+                    ? `https://maps.google.com/maps?q=government+hospital+near+${location.lat},${location.lng}&t=&z=13&ie=UTF8&iwloc=&output=embed`
+                    : "https://maps.google.com/maps?q=government+hospital+near+me&t=&z=12&ie=UTF8&iwloc=&output=embed"
+                }
+              ></iframe>
+            )}
+          </div>
+          <div className="mt-6 flex justify-center fade-up">
+            <a
+              href={
+                location
+                  ? `https://www.google.com/maps/search/government+hospital/@${location.lat},${location.lng},13z`
+                  : "https://www.google.com/maps/search/government+hospital+near+me"
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-xl px-6 py-3 font-semibold text-white shadow-md hover-lift transition-all duration-300"
+              style={{ background: "linear-gradient(135deg, #1A3A2A, #2C5742)" }}
+            >
+              <MapPin size={18} /> Open in Google Maps
+            </a>
           </div>
         </div>
       </div>

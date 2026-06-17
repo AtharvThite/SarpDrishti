@@ -63,6 +63,8 @@ export default function RescuerRegisterPage() {
     available_247: false,
     availability_hours: "",
     bio: "",
+    lat: "",
+    lng: "",
   });
 
   const updateField = (key, value) => {
@@ -100,25 +102,27 @@ export default function RescuerRegisterPage() {
     try {
       setSubmitting(true);
 
+      const formattedPhone = data.phone.startsWith("+91") ? data.phone : `+91${data.phone}`;
+      const formattedWhatsapp = data.whatsapp_same
+        ? formattedPhone
+        : (data.whatsapp.startsWith("+91") ? data.whatsapp : `+91${data.whatsapp}`);
+
       const payload = {
-        full_name: data.full_name,
-        phone: data.phone,
-        whatsapp: data.whatsapp_same
-          ? data.phone
-          : data.whatsapp,
+        name: data.full_name,
+        phone: formattedPhone,
+        whatsapp: formattedWhatsapp,
         email: data.email,
-        districts: data.districts,
-        experience_years: Number(
-          data.experience_years || 0
-        ),
+        districts_covered: data.districts,
+        experience_years: Number(data.experience_years || 0),
         organization: data.organization,
         govt_id_type: data.govt_id_type,
         govt_id_number: data.govt_id_number,
         service_radius_km: data.service_radius_km,
         available_247: data.available_247,
-        availability_hours:
-          data.availability_hours,
+        availability_hours: data.availability_hours,
         bio: data.bio,
+        lat: data.lat,
+        lng: data.lng,
       };
 
       await axios.post(
@@ -362,6 +366,41 @@ export default function RescuerRegisterPage() {
               Coverage & Availability
             </h2>
 
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
+                Base Location *
+              </label>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if ("geolocation" in navigator) {
+                      navigator.geolocation.getCurrentPosition(
+                        (pos) => {
+                          updateField("lat", pos.coords.latitude);
+                          updateField("lng", pos.coords.longitude);
+                          toast.success("Location captured successfully!");
+                        },
+                        (err) => {
+                          toast.error("Could not fetch location. Please enter manually.");
+                        }
+                      );
+                    } else {
+                      toast.error("Geolocation not supported by your browser");
+                    }
+                  }}
+                  className="rounded-lg border border-[#E5E0D2] bg-white px-4 py-2 text-sm font-semibold text-[#1A3A2A] hover:bg-[#F7F4EF]"
+                >
+                  Get Current Location
+                </button>
+                {data.lat && data.lng && (
+                  <span className="text-sm text-[#27AE60] font-medium flex items-center gap-1">
+                    <Check size={14} /> Set ({Number(data.lat).toFixed(4)}, {Number(data.lng).toFixed(4)})
+                  </span>
+                )}
+              </div>
+            </div>
+
             <Field label="Service Radius">
               <input
                 type="range"
@@ -442,7 +481,7 @@ export default function RescuerRegisterPage() {
             <button
               type="button"
               onClick={submit}
-              disabled={submitting}
+              disabled={submitting || !data.lat || !data.lng}
               className="sd-btn-primary disabled:opacity-50"
             >
               {submitting

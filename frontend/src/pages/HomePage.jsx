@@ -291,7 +291,7 @@ export default function HomePage() {
         <div className="grid gap-6 md:grid-cols-3 stagger-children">
           {featured.map((snake) => (
             <SnakeCard
-              key={snake.id}
+              key={snake._id || snake.slug}
               snake={snake}
             />
           ))}
