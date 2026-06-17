@@ -22,9 +22,8 @@ The model can currently identify the following common snakes:
 
 ### 📊 Model Performance & Metrics
 - **Architecture:** EfficientNetB3
-- **Test Accuracy:** `[INSERT ACCURACY %]`
-- **Validation Loss:** `[INSERT LOSS]`
-- **Additional Metrics:** `[INSERT F1-SCORE / PRECISION / RECALL]`
+- **Test Accuracy:** `97.56%`
+- **Validation Loss:** `0.4105`
 
 ### 📓 Training Details & Credits
 - **Dataset Credits:** Special thanks to `https://github.com/arjun921/Indian-Snakes-Dataset.git` for providing the comprehensive image dataset used to train this model.
