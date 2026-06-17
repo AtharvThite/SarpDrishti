@@ -1,0 +1,70 @@
+{
+  "model_name": "SarpDrishti Snake Classifier",
+  "version": "1.0.0",
+  "input_size": [
+    224,
+    224,
+    3
+  ],
+  "num_classes": 13,
+  "class_indices": {
+    "Banded Racer": 0,
+    "Checkered Keelback": 1,
+    "Common Krait": 2,
+    "Common Rat Snake": 3,
+    "Common Sand Boa": 4,
+    "Common Trinket": 5,
+    "Green Tree Vine": 6,
+    "Indian Rock Python": 7,
+    "King Cobra": 8,
+    "Monocled Cobra": 9,
+    "Russell's Viper": 10,
+    "Saw-scaled Viper": 11,
+    "Spectacled Cobra": 12
+  },
+  "idx_to_class": {
+    "0": "Banded Racer",
+    "1": "Checkered Keelback",
+    "2": "Common Krait",
+    "3": "Common Rat Snake",
+    "4": "Common Sand Boa",
+    "5": "Common Trinket",
+    "6": "Green Tree Vine",
+    "7": "Indian Rock Python",
+    "8": "King Cobra",
+    "9": "Monocled Cobra",
+    "10": "Russell's Viper",
+    "11": "Saw-scaled Viper",
+    "12": "Spectacled Cobra"
+  },
+  "venomous_classes": [
+    "Common Krait",
+    "King Cobra",
+    "Monocled Cobra",
+    "Russell's Viper",
+    "Saw-scaled Viper",
+    "Spectacled Cobra"
+  ],
+  "confidence_threshold": 0.65,
+  "base_model": "EfficientNetB3",
+  "training_date": "2026-06-17",
+  "val_accuracy": 0.9756,
+  "top3_accuracy": 0.9968,
+  "val_loss": 0.4105,
+  "total_images": 1776,
+  "per_class_accuracy": {
+    "Banded Racer": 1.0,
+    "Checkered Keelback": 0.9583,
+    "Common Krait": 0.975,
+    "Common Rat Snake": 0.975,
+    "Common Sand Boa": 1.0,
+    "Common Trinket": 0.9833,
+    "Green Tree Vine": 1.0,
+    "Indian Rock Python": 0.9667,
+    "King Cobra": 0.9833,
+    "Monocled Cobra": 0.9583,
+    "Russell's Viper": 0.9833,
+    "Saw-scaled Viper": 0.975,
+    "Spectacled Cobra": 0.925
+  }
+}

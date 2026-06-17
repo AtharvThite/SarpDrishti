@@ -1,75 +1,150 @@
 import os
 import numpy as np
+import tempfile
 from PIL import Image
-from .labels import SNAKE_LABELS, SNAKE_METADATA
+from ml.labels import SNAKE_LABELS, VENOMOUS_CLASSES, SNAKE_METADATA
 
-class SnakePredictor:
-    def __init__(self, model_path=None):
-        self.model = None
-        self.mock_mode = False
-        
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
-        
-        if not model_path:
-            model_path = os.getenv("MODEL_PATH", "ml/weights/snake_model.keras")
+# ── Lazy-load model once on first prediction ─────────────────────────────
+_model       = None
+_model_path  = None
 
+def get_model(model_path):
+    global _model, _model_path
+    if _model is None:
         try:
             import tensorflow as tf
-            if os.path.exists(model_path):
-                self.model = tf.keras.models.load_model(model_path)
-            else:
-                print(f"WARNING: Model file not found at {model_path}. Using mock mode.")
-                self.mock_mode = True
+            from tensorflow.keras.models import load_model
+            print(f"⏳ Loading snake model from {model_path}...")
+            _model      = load_model(model_path)
+            _model_path = model_path
+            print(f"✅ Snake model loaded successfully")
+            print(f"   Input shape  : {_model.input_shape}")
+            print(f"   Output shape : {_model.output_shape}")
+            print(f"   Classes      : {_model.output_shape[-1]}")
         except Exception as e:
-            print(f"WARNING: Failed to load ML model: {str(e)}. Using mock mode.")
-            self.mock_mode = True
+            print(f"⚠️  Model load failed: {e}")
+            print(f"⚠️  Running in MOCK mode")
+            _model = "mock"
+    return _model
 
-    def preprocess(self, image_path):
-        img = Image.open(image_path).convert('RGB')
-        img = img.resize((224, 224))
-        img_array = np.array(img) / 255.0
-        return np.expand_dims(img_array, axis=0)
 
-    def predict(self, image_path, confidence_threshold=0.65):
-        if self.mock_mode:
+def preprocess_image(image_path, input_size=(224, 224)):
+    """
+    Preprocessing MUST match training exactly.
+    Training used: EfficientNet preprocess_input → range [-1, 1]
+    NOT /255.0 → that caused the Monocled Cobra bug
+    """
+    from tensorflow.keras.applications.efficientnet import preprocess_input
+
+    img = Image.open(image_path).convert('RGB')
+    img = img.resize(input_size, Image.LANCZOS)
+    arr = np.array(img, dtype=np.float32)
+
+    # EfficientNet-specific preprocessing — same as training
+    arr = preprocess_input(arr)
+
+    # Add batch dimension → (1, 224, 224, 3)
+    return np.expand_dims(arr, axis=0)
+
+
+def slug_from_name(name):
+    """Russell's Viper → russells-viper"""
+    return name.lower().replace("'", "").replace(" ", "-")
+
+
+class SnakePredictor:
+
+    def __init__(self, model_path, input_size=(224, 224), threshold=0.65):
+        self.model_path  = model_path
+        self.input_size  = input_size
+        self.threshold   = threshold
+        self.labels      = SNAKE_LABELS
+        self.venomous    = VENOMOUS_CLASSES
+        self.metadata    = SNAKE_METADATA
+
+    def _get_model(self):
+        return get_model(self.model_path)
+
+    def predict(self, image_path):
+        """
+        Main prediction function.
+        Returns dict matching the frontend contract exactly.
+        """
+        model = self._get_model()
+
+        # Mock mode — model file not found
+        if model == "mock":
+            return self._mock_prediction()
+
+        try:
+            # Preprocess
+            arr = preprocess_image(image_path, self.input_size)
+
+            # Inference
+            preds    = model.predict(arr, verbose=0)[0]
+            top3_idx = np.argsort(preds)[::-1][:3]
+            top_idx  = int(top3_idx[0])
+            top_conf = float(preds[top_idx])
+            top_name = self.labels[top_idx]
+
             return {
-                "slug": "spectacled-cobra",
-                "confidence": 0.87,
-                "is_uncertain": False,
+                "slug"           : slug_from_name(top_name),
+                "confidence"     : round(top_conf, 3),
+                "is_uncertain"   : top_conf < self.threshold,
                 "top_predictions": [
-                    {"slug": "spectacled-cobra", "common_name": "Spectacled Cobra", "confidence": 0.87},
-                    {"slug": "monocled-cobra", "common_name": "Monocled Cobra", "confidence": 0.08},
-                    {"slug": "indian-rock-python", "common_name": "Indian Rock Python", "confidence": 0.05}
+                    {
+                        "slug"        : slug_from_name(self.labels[i]),
+                        "common_name" : self.labels[i],
+                        "confidence"  : round(float(preds[i]), 3)
+                    }
+                    for i in top3_idx
                 ]
             }
 
-        try:
-            processed_img = self.preprocess(image_path)
-            predictions = self.model.predict(processed_img, verbose=0)[0]
-            
-            top_3_idx = np.argsort(predictions)[-3:][::-1]
-            
-            top_predictions = []
-            for idx in top_3_idx:
-                label = SNAKE_LABELS[idx]
-                meta = SNAKE_METADATA[label]
-                top_predictions.append({
-                    "slug": meta["slug"],
-                    "common_name": label,
-                    "confidence": float(predictions[idx])
-                })
-                
-            best_pred = top_predictions[0]
-            is_uncertain = best_pred["confidence"] < confidence_threshold
-            
-            return {
-                "slug": best_pred["slug"],
-                "confidence": best_pred["confidence"],
-                "is_uncertain": is_uncertain,
-                "top_predictions": top_predictions
-            }
-            
         except Exception as e:
             raise RuntimeError(f"Prediction failed: {str(e)}")
 
-predictor = SnakePredictor()
+    def _mock_prediction(self):
+        """
+        Returned when model file is missing.
+        Useful for testing backend without model.
+        """
+        return {
+            "slug"           : "spectacled-cobra",
+            "confidence"     : 0.87,
+            "is_uncertain"   : False,
+            "top_predictions": [
+                {
+                    "slug"       : "spectacled-cobra",
+                    "common_name": "Spectacled Cobra",
+                    "confidence" : 0.87
+                },
+                {
+                    "slug"       : "monocled-cobra",
+                    "common_name": "Monocled Cobra",
+                    "confidence" : 0.08
+                },
+                {
+                    "slug"       : "king-cobra",
+                    "common_name": "King Cobra",
+                    "confidence" : 0.03
+                }
+            ]
+        }
+
+    def health_check(self):
+        """Called by /api/health to check model status."""
+        model = self._get_model()
+        if model == "mock":
+            return {
+                "status" : "mock_mode",
+                "message": "Model file not found — using mock predictions",
+                "path"   : self.model_path
+            }
+        return {
+            "status"      : "loaded",
+            "message"     : "Model loaded and ready",
+            "path"        : self.model_path,
+            "input_shape" : str(model.input_shape),
+            "num_classes" : model.output_shape[-1]
+        }

@@ -2,7 +2,7 @@ flask
 flask-cors
 pymongo
 python-dotenv
-tensorflow==2.15.0
+tensorflow
 Pillow
 numpy
 cloudinary

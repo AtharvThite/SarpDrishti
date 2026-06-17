@@ -35,11 +35,7 @@ export default function IdentifyPage() {
       const formData = new FormData();
       formData.append("image", blob, "upload.jpg");
 
-      const response = await axios.post(`${API}/identify`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await axios.post(`${API}/identify`, formData);
       setResult(response.data.snake);
     } catch (error) { console.error(error); }
     finally { setLoading(false); }
@@ -120,12 +116,10 @@ export default function IdentifyPage() {
                   <ShieldCheck size={18} /> Non-Venomous — You are likely safe
                 </div>
               )}
-              {result.is_venomous && (
-                <div className="grid grid-cols-2 gap-2 bg-gradient-to-r from-[#FFF5F2] to-[#fff0ed] p-4">
-                  <Link to="/rescuers" className="sd-btn-danger" data-testid="result-call-rescuer"><Phone size={16} /> Call Rescuer</Link>
-                  <Link to="/emergency" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#C0392B] ring-2 ring-[#C0392B] transition-all hover:bg-[#C0392B] hover:text-white" data-testid="result-find-hospital">Emergency Guide</Link>
-                </div>
-              )}
+              <div className="grid grid-cols-2 gap-2 bg-gradient-to-r from-[#FFF5F2] to-[#fff0ed] p-4">
+                <Link to="/rescuers" className="sd-btn-danger" data-testid="result-call-rescuer"><Phone size={16} /> Call Rescuer</Link>
+                <Link to="/emergency" className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-[#C0392B] ring-2 ring-[#C0392B] transition-all hover:bg-[#C0392B] hover:text-white" data-testid="result-find-hospital">Emergency Guide</Link>
+              </div>
               <div className="bg-white p-5">
                 <div className="flex items-start gap-4">
                   <img src={result.thumbnail} alt={result.common_name} className="h-20 w-20 shrink-0 rounded-xl object-cover shadow-md" onError={(e) => { e.currentTarget.src = "https://placehold.co/120x120/1A3A2A/ffffff?text=Snake"; }} />

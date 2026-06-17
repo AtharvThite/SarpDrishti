@@ -1,5 +1,7 @@
 export default function ConfidenceBar({ value = 0 }) {
-  const confidence = Math.min(100, Math.max(0, Number(value) || 0));
+  const numValue = Number(value) || 0;
+  const percentage = numValue <= 1 ? numValue * 100 : numValue;
+  const confidence = Math.round(Math.min(100, Math.max(0, percentage)));
 
   const getColor = () => {
     if (confidence >= 80) return "linear-gradient(90deg, #27AE60, #2ecc71)";

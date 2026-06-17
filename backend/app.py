@@ -124,8 +124,12 @@ def create_app():
         except:
             pass
             
-        from ml.predictor import predictor
-        ml_status = "mock mode" if predictor.mock_mode else "loaded"
+        try:
+            from routes.ml_routes import get_predictor
+            predictor = get_predictor()
+            ml_status = predictor.health_check()["status"]
+        except Exception:
+            ml_status = "unknown"
         
         return jsonify({
             "status": "ok",
