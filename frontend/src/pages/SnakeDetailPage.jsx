@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import {
   AlertTriangle,
   ShieldCheck,
@@ -17,6 +18,7 @@ const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export default function SnakeDetailPage() {
   const { id } = useParams();
+  const { t } = useTranslation();
 
   const [snake, setSnake] = useState(null);
   const [similar, setSimilar] = useState([]);
@@ -52,7 +54,7 @@ export default function SnakeDetailPage() {
   if (!snake) {
     return (
       <div className="mx-auto max-w-4xl px-4 py-12">
-        Loading...
+        {t('snakeDetail.loading')}
       </div>
     );
   }
@@ -71,7 +73,7 @@ export default function SnakeDetailPage() {
             to="/snakes"
             className="text-sm text-[#E8A020] hover:underline"
           >
-            ← Back to all snakes
+            {t('snakeDetail.backToAll')}
           </Link>
 
           <h1 className="mt-3 font-display text-4xl font-bold text-white sm:text-5xl">
@@ -156,23 +158,23 @@ export default function SnakeDetailPage() {
 
             <section className="mt-8">
               <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">
-                About
+                {t('snakeDetail.about')}
               </h2>
 
               <p className="mt-3 leading-relaxed text-[#1c1c1c]">
                 The {snake.common_name} (
                 {snake.scientific_name}) is{" "}
                 {snake.is_venomous
-                  ? "a venomous"
-                  : "a non-venomous"}{" "}
-                snake found across{" "}
+                  ? t('snakeDetail.aVenomous')
+                  : t('snakeDetail.aNonVenomous')}{" "}
+                {t('snakeDetail.snakeFoundAcross')}{" "}
                 {snake.distribution?.join(", ")}.{" "}
                 {snake.behavior}
               </p>
 
               {snake.common_name_regional && Object.keys(snake.common_name_regional).length > 0 && (
                 <div className="mt-4 rounded-xl bg-white p-4 shadow-sm border border-[#E9E3D7]">
-                  <h3 className="font-semibold text-[#1A3A2A] mb-2">Regional Names</h3>
+                  <h3 className="font-semibold text-[#1A3A2A] mb-2">{t('snakeDetail.regionalNames')}</h3>
                   <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#4a4a4a]">
                     {Object.entries(snake.common_name_regional).map(([lang, name]) => (
                       <span key={lang}>
@@ -186,7 +188,7 @@ export default function SnakeDetailPage() {
 
             <section className="mt-8">
               <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">
-                Identification Guide
+                {t('snakeDetail.identificationGuide')}
               </h2>
 
               <ul className="mt-3 space-y-2">
@@ -206,23 +208,23 @@ export default function SnakeDetailPage() {
 
             <section className="mt-8">
               <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">
-                Habitat & Distribution
+                {t('snakeDetail.habitatDistribution')}
               </h2>
 
               <p className="mt-3 text-[#1c1c1c]">
-                <strong>Habitat:</strong>{" "}
+                <strong>{t('snakeDetail.habitat')}:</strong>{" "}
                 {snake.habitat?.join(", ")}
               </p>
 
               <p className="mt-1 text-[#1c1c1c]">
-                <strong>Distribution:</strong>{" "}
+                <strong>{t('snakeDetail.distribution')}:</strong>{" "}
                 {snake.distribution?.join(", ")}
               </p>
             </section>
 
             <section className="mt-8">
               <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">
-                Diet
+                {t('snakeDetail.diet')}
               </h2>
               <div className="mt-3 flex flex-wrap gap-2">
                 {snake.diet?.map((food, index) => (
@@ -238,7 +240,7 @@ export default function SnakeDetailPage() {
 
             <section className="mt-8">
               <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">
-                Behavior
+                {t('snakeDetail.behavior')}
               </h2>
 
               <p className="mt-3 leading-relaxed text-[#1c1c1c]">
@@ -248,18 +250,18 @@ export default function SnakeDetailPage() {
 
             {snake.lifespan_years && (
               <section className="mt-8">
-                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Biology & Lifecycle</h2>
+                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">{t('snakeDetail.biologyLifecycle')}</h2>
                 <div className="mt-4 grid sm:grid-cols-2 gap-4">
                   <div className="rounded-xl bg-white p-4 shadow-sm border border-[#E9E3D7]">
-                    <h3 className="font-semibold text-[#1A3A2A] mb-2">Lifespan</h3>
-                    <p className="text-[#6B7280] text-sm"><strong>Wild:</strong> {snake.lifespan_years.wild} years</p>
-                    <p className="text-[#6B7280] text-sm"><strong>Captivity:</strong> {snake.lifespan_years.captivity} years</p>
+                    <h3 className="font-semibold text-[#1A3A2A] mb-2">{t('snakeDetail.lifespan')}</h3>
+                    <p className="text-[#6B7280] text-sm"><strong>{t('snakeDetail.wild')}:</strong> {snake.lifespan_years.wild} {t('snakeDetail.years')}</p>
+                    <p className="text-[#6B7280] text-sm"><strong>{t('snakeDetail.captivity')}:</strong> {snake.lifespan_years.captivity} {t('snakeDetail.years')}</p>
                   </div>
                   <div className="rounded-xl bg-white p-4 shadow-sm border border-[#E9E3D7]">
-                    <h3 className="font-semibold text-[#1A3A2A] mb-2">Reproduction</h3>
-                    <p className="text-[#6B7280] text-sm"><strong>Type:</strong> {snake.reproduction?.type}</p>
-                    <p className="text-[#6B7280] text-sm"><strong>Clutch Size:</strong> {snake.reproduction?.offspring_per_clutch}</p>
-                    <p className="text-[#6B7280] text-sm"><strong>Season:</strong> {snake.reproduction?.breeding_season}</p>
+                    <h3 className="font-semibold text-[#1A3A2A] mb-2">{t('snakeDetail.reproduction')}</h3>
+                    <p className="text-[#6B7280] text-sm"><strong>{t('snakeDetail.type')}:</strong> {snake.reproduction?.type}</p>
+                    <p className="text-[#6B7280] text-sm"><strong>{t('snakeDetail.clutchSize')}:</strong> {snake.reproduction?.offspring_per_clutch}</p>
+                    <p className="text-[#6B7280] text-sm"><strong>{t('snakeDetail.season')}:</strong> {snake.reproduction?.breeding_season}</p>
                   </div>
                 </div>
               </section>
@@ -267,16 +269,16 @@ export default function SnakeDetailPage() {
 
             {snake.ecological_role && (
               <section className="mt-8">
-                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Ecology & Conservation</h2>
+                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">{t('snakeDetail.ecologyConservation')}</h2>
                 <div className="mt-4 space-y-4">
                   <div className="rounded-xl bg-[#F9FAFB] p-4 border border-[#E5E0D2]">
-                    <h3 className="font-semibold text-[#1A3A2A] mb-1">Ecological Role</h3>
+                    <h3 className="font-semibold text-[#1A3A2A] mb-1">{t('snakeDetail.ecologicalRole')}</h3>
                     <p className="text-[#6B7280] text-sm">{snake.ecological_role}</p>
                   </div>
                   
                   {snake.benefits_to_humans?.length > 0 && (
                     <div className="rounded-xl bg-[#F9FAFB] p-4 border border-[#E5E0D2]">
-                      <h3 className="font-semibold text-[#1A3A2A] mb-1">Benefits to Humans</h3>
+                      <h3 className="font-semibold text-[#1A3A2A] mb-1">{t('snakeDetail.benefitsToHumans')}</h3>
                       <ul className="list-disc list-inside text-[#6B7280] text-sm space-y-1 mt-2">
                         {snake.benefits_to_humans.map((benefit, i) => <li key={i}>{benefit}</li>)}
                       </ul>
@@ -285,7 +287,7 @@ export default function SnakeDetailPage() {
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="rounded-xl bg-white p-4 border border-[#E5E0D2]">
-                      <h3 className="font-semibold text-[#1A3A2A] mb-3">Natural Predators</h3>
+                      <h3 className="font-semibold text-[#1A3A2A] mb-3">{t('snakeDetail.naturalPredators')}</h3>
                       <div className="flex flex-wrap gap-2">
                         {snake.natural_predators?.map((p, i) => (
                           <span key={i} className="rounded-full bg-[#1A3A2A]/5 text-[#1A3A2A] px-3 py-1 text-xs font-semibold">{p}</span>
@@ -293,7 +295,7 @@ export default function SnakeDetailPage() {
                       </div>
                     </div>
                     <div className="rounded-xl bg-white p-4 border border-[#E5E0D2]">
-                      <h3 className="font-semibold text-[#1A3A2A] mb-3">Conservation Threats</h3>
+                      <h3 className="font-semibold text-[#1A3A2A] mb-3">{t('snakeDetail.conservationThreats')}</h3>
                       <div className="flex flex-wrap gap-2">
                         {snake.conservation_threats?.map((t, i) => (
                           <span key={i} className="rounded-full bg-[#C0392B]/10 text-[#C0392B] px-3 py-1 text-xs font-semibold">{t}</span>
@@ -307,13 +309,13 @@ export default function SnakeDetailPage() {
 
             {(snake.interesting_facts || snake.did_you_know || snake.myths_and_facts) && (
               <section className="mt-8">
-                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">Fascinating Facts</h2>
+                <h2 className="font-display text-2xl font-bold text-[#1A3A2A]">{t('snakeDetail.fascinatingFacts')}</h2>
                 
                 {snake.did_you_know && (
                   <div className="mt-4 rounded-2xl bg-gradient-to-r from-[#FDF7EC] to-[#FFFBF5] p-5 shadow-sm border border-[#E8A020]/20 flex items-start gap-4">
                     <div className="text-[#E8A020] mt-1"><Sparkles size={24} /></div>
                     <div>
-                      <h3 className="font-bold text-[#E8A020] mb-1">Did You Know?</h3>
+                      <h3 className="font-bold text-[#E8A020] mb-1">{t('snakeDetail.didYouKnow')}</h3>
                       <p className="text-[#1c1c1c] font-medium">{snake.did_you_know}</p>
                     </div>
                   </div>
@@ -332,11 +334,11 @@ export default function SnakeDetailPage() {
                 
                 {snake.myths_and_facts?.length > 0 && (
                   <div className="mt-6 space-y-3">
-                    <h3 className="font-semibold text-[#1A3A2A]">Myths Busted</h3>
+                    <h3 className="font-semibold text-[#1A3A2A]">{t('snakeDetail.mythsBusted')}</h3>
                     {snake.myths_and_facts.map((mf, index) => (
                       <div key={index} className="rounded-xl bg-white p-4 border border-[#E9E3D7]">
-                        <p className="text-sm text-[#C0392B] font-medium mb-1">Myth: {mf.myth}</p>
-                        <p className="text-sm text-[#27AE60] font-medium">Fact: {mf.fact}</p>
+                        <p className="text-sm text-[#C0392B] font-medium mb-1">{t('snakeDetail.myth')}: {mf.myth}</p>
+                        <p className="text-sm text-[#27AE60] font-medium">{t('snakeDetail.fact')}: {mf.fact}</p>
                       </div>
                     ))}
                   </div>
@@ -373,7 +375,7 @@ export default function SnakeDetailPage() {
                 {snake.human_risk_level && (
                   <div className="flex justify-between mb-3 border-b border-black/5 pb-3">
                     <span className="text-[#6B7280]">
-                      Risk Level
+                      {t('snakeDetail.riskLevel')}
                     </span>
                     <span className={`font-semibold ${snake.human_risk_level === 'Extreme' ? 'text-[#C0392B]' : snake.human_risk_level === 'Moderate' ? 'text-[#E8A020]' : 'text-[#27AE60]'}`}>
                       {snake.human_risk_level}
@@ -384,7 +386,7 @@ export default function SnakeDetailPage() {
                 {snake.venom_type && (
                   <div className="flex justify-between">
                     <span className="text-[#6B7280]">
-                      Venom
+                      {t('snakeDetail.venom')}
                     </span>
                     <span className="font-medium">
                       {snake.venom_type}
@@ -394,7 +396,7 @@ export default function SnakeDetailPage() {
 
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">
-                    Size
+                    {t('snakeDetail.size')}
                   </span>
                   <span className="font-mono font-medium">
                     {snake.size_range_cm?.min}-{snake.size_range_cm?.max} cm
@@ -403,7 +405,7 @@ export default function SnakeDetailPage() {
 
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">
-                    Active
+                    {t('snakeDetail.active')}
                   </span>
                   <span className="font-medium capitalize text-right">
                     {snake.active_period}
@@ -413,7 +415,7 @@ export default function SnakeDetailPage() {
 
                 <div className="flex justify-between">
                   <span className="text-[#6B7280]">
-                    IUCN Status
+                    {t('snakeDetail.iucnStatus')}
                   </span>
                   <span className={`font-medium ${
                     snake.iucn_status === "Least Concern" ? "text-green-600" : "text-amber-600"
@@ -425,10 +427,10 @@ export default function SnakeDetailPage() {
                 {snake.is_protected && (
                   <div className="flex justify-between">
                     <span className="text-[#6B7280]">
-                      Protected Status
+                      {t('snakeDetail.protectedStatus')}
                     </span>
                     <span className="font-medium text-green-600 flex items-center gap-1">
-                      <ShieldCheck size={14} /> Yes
+                      <ShieldCheck size={14} /> {t('snakeDetail.yes')}
                     </span>
                   </div>
                 )}
@@ -436,10 +438,10 @@ export default function SnakeDetailPage() {
                 {snake.time_to_symptoms_hours && snake.time_to_symptoms_hours.max > 0 && (
                   <div className="flex justify-between">
                     <span className="text-[#6B7280]">
-                      Symptoms in
+                      {t('snakeDetail.symptomsIn')}
                     </span>
                     <span className="font-medium">
-                      {snake.time_to_symptoms_hours.min}-{snake.time_to_symptoms_hours.max} hrs
+                      {snake.time_to_symptoms_hours.min}-{snake.time_to_symptoms_hours.max} {t('snakeDetail.hrs')}
                     </span>
                   </div>
                 )}
@@ -449,7 +451,7 @@ export default function SnakeDetailPage() {
             {similar.length > 0 && (
               <div className="sd-card p-5">
                 <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
-                  Similar Species
+                  {t('snakeDetail.similarSpecies')}
                 </p>
 
                 <div className="space-y-2">
@@ -481,7 +483,7 @@ export default function SnakeDetailPage() {
 
             <div className="sd-card p-5">
               <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-[#C0392B]">
-                If Bitten
+                {t('snakeDetail.ifBitten')}
               </p>
 
               <ol className="space-y-2 text-sm">
@@ -502,7 +504,7 @@ export default function SnakeDetailPage() {
 
               {snake.antivenom && snake.antivenom !== "Not required" && (
                 <div className="mt-4 rounded-md bg-[#FDF2F2] p-3 text-sm text-[#C0392B] border border-[#F9DEDC]">
-                  <strong>Antivenom:</strong> {snake.antivenom}
+                  <strong>{t('snakeDetail.antivenom')}:</strong> {snake.antivenom}
                 </div>
               )}
 
@@ -510,7 +512,7 @@ export default function SnakeDetailPage() {
                 to="/emergency"
                 className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-[#1A3A2A] hover:underline"
               >
-                Read full guide
+                {t('snakeDetail.readFullGuide')}
                 <ChevronRight size={14} />
               </Link>
             </div>
@@ -522,7 +524,7 @@ export default function SnakeDetailPage() {
                 data-testid="sidebar-find-hospital"
               >
                 <Hospital size={14} />
-                Hospital
+                {t('snakeDetail.hospital')}
               </Link>
 
               <Link
@@ -531,7 +533,7 @@ export default function SnakeDetailPage() {
                 data-testid="sidebar-call-rescuer"
               >
                 <Phone size={14} />
-                Rescuer
+                {t('snakeDetail.rescuer')}
               </Link>
             </div>
           </aside>

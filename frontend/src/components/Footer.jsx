@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import { BookAIcon , BirdIcon, CameraIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t } = useTranslation();
   return (
     <footer
       className="mt-16 text-[#D1D5DB] gradient-hero relative overflow-hidden"
@@ -16,56 +18,56 @@ export default function Footer() {
           <div>
             <div className="flex items-center gap-2">
               <span className="font-display text-2xl font-bold gradient-text">
-                SarpDrishti
+                {t('nav.brand')}
               </span>
             </div>
 
             <p className="mt-3 text-sm text-[#94A3B8] leading-relaxed">
-              See it. Identify it. Stay Safe.
+              {t('footer.tagline')}
               <br />
-              <span className="text-xs opacity-70">AI-powered snake identification for India.</span>
+              <span className="text-xs opacity-70">{t('footer.taglineSub')}</span>
             </p>
           </div>
 
           <div>
             <h4 className="mb-4 font-display text-base font-semibold text-[#E8A020]">
-              Navigate
+              {t('footer.navigate')}
             </h4>
 
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link to="/" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Home
+                  {t('nav.home')}
                 </Link>
               </li>
 
               <li>
                 <Link to="/identify" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Identify
+                  {t('nav.identify')}
                 </Link>
               </li>
 
               <li>
                 <Link to="/snakes" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Browse Snakes
+                  {t('footer.browseSnakes')}
                 </Link>
               </li>
 
               <li>
                 <Link to="/rescuers" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Find Rescuers
+                  {t('footer.findRescuers')}
                 </Link>
               </li>
 
               <li>
                 <Link to="/emergency" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Emergency Guide
+                  {t('footer.emergencyGuide')}
                 </Link>
               </li>
 
               <li>
                 <Link to="/awareness" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Awareness
+                  {t('nav.awareness')}
                 </Link>
               </li>
             </ul>
@@ -73,31 +75,31 @@ export default function Footer() {
 
           <div>
             <h4 className="mb-4 font-display text-base font-semibold text-[#E8A020]">
-              Connect
+              {t('footer.connect')}
             </h4>
 
             <ul className="space-y-2.5 text-sm">
               <li>
                 <a href="#" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  About
+                  {t('footer.about')}
                 </a>
               </li>
 
               <li>
                 <a href="#" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Partners
+                  {t('footer.partners')}
                 </a>
               </li>
 
               <li>
                 <a href="#" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Contact
+                  {t('footer.contact')}
                 </a>
               </li>
 
               <li>
                 <Link to="/rescuer/register" className="transition-all duration-300 hover:text-white hover:translate-x-1 inline-block">
-                  Register as Rescuer
+                  {t('footer.registerAsRescuer')}
                 </Link>
               </li>
             </ul>
@@ -105,7 +107,7 @@ export default function Footer() {
 
           <div>
             <h4 className="mb-4 font-display text-base font-semibold text-[#E8A020]">
-              Follow
+              {t('footer.follow')}
             </h4>
 
             <div className="flex gap-3">
@@ -139,9 +141,8 @@ export default function Footer() {
         <div className="section-divider mt-10 mb-6" />
 
         <div className="text-xs text-[#94A3B8]">
-          SarpDrishti is an assistive tool. Always consult medical
-          professionals in an emergency. © {new Date().getFullYear()}{" "}
-          SarpDrishti.
+          {t('footer.disclaimer')} © {new Date().getFullYear()}{" "}
+          {t('nav.brand')}.
         </div>
       </div>
     </footer>

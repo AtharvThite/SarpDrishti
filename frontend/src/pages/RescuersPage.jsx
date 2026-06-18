@@ -2,57 +2,23 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { MapPin, Search, Locate, Heart, Shield, Award } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import RescuerCard from "../components/RescuerCard";
 
 const RESCUE_STORIES = [
-  {
-    title: "School Visit Prevented",
-    text: "A 6-foot Rat Snake was rescued from a primary school in Pune and safely released into a nearby forest habitat, ensuring safety for both students and the snake.",
-    icon: Shield,
-    color: "#27AE60",
-    bg: "rgba(39,174,96,0.1)"
-  },
-  {
-    title: "Midnight Cobra Call",
-    text: "A Spectacled Cobra found refuge in an office basement during heavy rains. A registered rescuer carefully bagged it without any injury and relocated it.",
-    icon: Award,
-    color: "#E8A020",
-    bg: "rgba(232,160,32,0.1)"
-  },
-  {
-    title: "Residential Krait Rescue",
-    text: "A homeowner spotted a highly venomous Common Krait near their porch. Thanks to SarpDrishti, a rescuer arrived in 15 minutes and safely removed the threat.",
-    icon: Heart,
-    color: "#C0392B",
-    bg: "rgba(192,57,43,0.1)"
-  },
-  {
-    title: "Vine Snake in Garden",
-    text: "A bright green Vine Snake was found resting on a family's balcony plants. A rescuer gently guided it into a cloth bag and relocated it to a nearby wooded area.",
-    icon: Shield,
-    color: "#27AE60",
-    bg: "rgba(39,174,96,0.1)"
-  },
-  {
-    title: "Russell's Viper in Farm",
-    text: "Farmers in Maharashtra spotted a highly venomous Russell's Viper in a sugarcane field. They paused work and called a certified rescuer who safely removed it, preventing a potential tragedy.",
-    icon: Award,
-    color: "#C0392B",
-    bg: "rgba(192,57,43,0.1)"
-  },
-  {
-    title: "Sand Boa near Construction",
-    text: "A harmless Red Sand Boa was mistaken for a dangerous snake at a construction site. SarpDrishti helped identify it quickly, and a local expert safely moved it away from the machinery.",
-    icon: Heart,
-    color: "#E8A020",
-    bg: "rgba(232,160,32,0.1)"
-  }
+  { icon: Shield, color: "#27AE60", bg: "rgba(39,174,96,0.1)" },
+  { icon: Award, color: "#E8A020", bg: "rgba(232,160,32,0.1)" },
+  { icon: Heart, color: "#C0392B", bg: "rgba(192,57,43,0.1)" },
+  { icon: Shield, color: "#27AE60", bg: "rgba(39,174,96,0.1)" },
+  { icon: Award, color: "#C0392B", bg: "rgba(192,57,43,0.1)" },
+  { icon: Heart, color: "#E8A020", bg: "rgba(232,160,32,0.1)" }
 ];
 
 const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export default function RescuersPage() {
+  const { t } = useTranslation();
   const [rescuers, setRescuers] = useState([]);
   const [district, setDistrict] = useState("");
   const [loading, setLoading] = useState(true);
@@ -121,16 +87,15 @@ export default function RescuersPage() {
       >
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-wider text-[#E8A020]">
-            Local Heroes
+            {t('rescuers.label')}
           </p>
 
           <h1 className="mt-2 font-display text-4xl font-bold text-white sm:text-5xl">
-            Find a Snake Rescuer Near You
+            {t('rescuers.title')}
           </h1>
 
           <p className="mt-3 max-w-2xl text-[#D1D5DB]">
-            Verified rescuers across India ready to
-            safely relocate snakes from your area.
+            {t('rescuers.subtitle')}
           </p>
         </div>
       </header>
@@ -139,7 +104,7 @@ export default function RescuersPage() {
           RESCUE STORIES
           ============================================ */}
       <section className="mx-auto mt-10 max-w-3xl px-4 lg:px-8 fade-up">
-        <h2 className="font-display text-2xl font-bold text-[#1A3A2A] mb-5 text-center">Hero Rescue Stories</h2>
+        <h2 className="font-display text-2xl font-bold text-[#1A3A2A] mb-5 text-center">{t('rescuers.heroStoriesTitle')}</h2>
         <div className="relative overflow-hidden rounded-2xl border border-black/5 p-6 md:p-8" style={{ background: "linear-gradient(to bottom right, #ffffff, #F9FAFB)" }}>
           {RESCUE_STORIES.map((story, idx) => (
             <div 
@@ -150,8 +115,8 @@ export default function RescuersPage() {
                 <story.icon size={32} />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <h3 className="font-display text-xl font-bold text-[#1c1c1c] mb-3">{story.title}</h3>
-                <p className="text-base text-[#6B7280] leading-relaxed">{story.text}</p>
+                <h3 className="font-display text-xl font-bold text-[#1c1c1c] mb-3">{t(`rescuers.story${idx + 1}_title`)}</h3>
+                <p className="text-base text-[#6B7280] leading-relaxed">{t(`rescuers.story${idx + 1}_text`)}</p>
               </div>
             </div>
           ))}
@@ -177,7 +142,7 @@ export default function RescuersPage() {
       </section>
 
       <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8">
-        <h2 className="font-display text-2xl font-bold text-[#1A3A2A] mb-5">Find a Rescuer</h2>
+        <h2 className="font-display text-2xl font-bold text-[#1A3A2A] mb-5">{t('rescuers.findRescuer')}</h2>
         <div className="sd-card flex flex-wrap gap-2 p-4">
           <div className="relative min-w-[200px] flex-1">
             <MapPin
@@ -190,7 +155,7 @@ export default function RescuersPage() {
               onChange={(e) =>
                 setDistrict(e.target.value)
               }
-              placeholder="Enter your district or city..."
+              placeholder={t('rescuers.searchPlaceholder')}
               className="w-full rounded-lg border border-[#E5E0D2] bg-white py-2.5 pl-9 pr-3 text-sm focus:border-[#1A3A2A] focus:outline-none"
               data-testid="rescuer-search-input"
             />
@@ -202,7 +167,7 @@ export default function RescuersPage() {
             data-testid="use-location-btn"
           >
             <Locate size={14} />
-            Use My Location
+            {t('rescuers.useMyLocation')}
           </button>
 
           <button
@@ -213,7 +178,7 @@ export default function RescuersPage() {
             data-testid="search-rescuers-btn"
           >
             <Search size={14} />
-            Search
+            {t('rescuers.search')}
           </button>
         </div>
 
@@ -222,20 +187,20 @@ export default function RescuersPage() {
             className="text-sm text-[#6B7280]"
             data-testid="rescuer-count"
           >
-            {rescuers.length} rescuers found
+            {rescuers.length} {t('rescuers.rescuersFound')}
           </p>
 
           <Link
             to="/rescuer/register"
             className="text-sm font-semibold text-[#1A3A2A] hover:underline"
           >
-            Are you a rescuer? Register →
+            {t('rescuers.registerPrompt')}
           </Link>
         </div>
 
         {loading ? (
           <p className="mt-8 text-center text-[#6B7280]">
-            Loading...
+            {t('rescuers.loading')}
           </p>
         ) : (
           <div className="mt-4 grid gap-5 md:grid-cols-2 lg:grid-cols-3">

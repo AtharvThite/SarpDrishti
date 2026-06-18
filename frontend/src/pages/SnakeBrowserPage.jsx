@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Search } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import SnakeCard from "../components/SnakeCard";
 
@@ -17,6 +18,7 @@ const REGIONS = [
 ];
 
 export default function SnakeBrowserPage() {
+  const { t } = useTranslation();
   const [snakes, setSnakes] = useState([]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
@@ -84,17 +86,15 @@ export default function SnakeBrowserPage() {
       >
         <div className="mx-auto max-w-7xl px-4 lg:px-8">
           <p className="text-sm font-semibold uppercase tracking-wider text-[#E8A020]">
-            Encyclopedia
+            {t('snakeBrowser.label')}
           </p>
 
           <h1 className="mt-2 font-display text-4xl font-bold text-white sm:text-5xl">
-            Snakes of India
+            {t('snakeBrowser.title')}
           </h1>
 
           <p className="mt-3 max-w-2xl text-[#D1D5DB]">
-            From the cobras of the plains to the vipers
-            of the deserts — learn to recognise India's
-            most common species.
+            {t('snakeBrowser.subtitle')}
           </p>
         </div>
       </header>
@@ -118,7 +118,7 @@ export default function SnakeBrowserPage() {
                 onChange={(e) =>
                   setQ(e.target.value)
                 }
-                placeholder="Search by name..."
+                placeholder={t('snakeBrowser.searchPlaceholder')}
                 className="w-full rounded-lg border border-[#E5E0D2] bg-white py-2.5 pl-9 pr-3 text-sm focus:border-[#1A3A2A] focus:outline-none"
                 data-testid="search-input"
               />
@@ -129,14 +129,14 @@ export default function SnakeBrowserPage() {
               data-testid="venom-filter"
             >
               {[
-                { v: "all", label: "All" },
+                { v: "all", label: t('snakeBrowser.all') },
                 {
                   v: "venomous",
-                  label: "Venomous",
+                  label: t('snakeBrowser.venomous'),
                 },
                 {
                   v: "non-venomous",
-                  label: "Non-Venomous",
+                  label: t('snakeBrowser.nonVenomous'),
                 },
               ].map((option) => (
                 <button
@@ -169,7 +169,7 @@ export default function SnakeBrowserPage() {
                   key={regionItem.value}
                   value={regionItem.value}
                 >
-                  {regionItem.label}
+                  {regionItem.value === 'all' ? t('snakeBrowser.allIndia') : regionItem.label}
                 </option>
               ))}
             </select>
@@ -180,14 +180,14 @@ export default function SnakeBrowserPage() {
       <main className="mx-auto max-w-7xl px-4 py-8 lg:px-8">
         {loading ? (
           <p className="text-center text-[#6B7280]">
-            Loading snakes...
+            {t('snakeBrowser.loading')}
           </p>
         ) : filtered.length === 0 ? (
           <p
             className="text-center text-[#6B7280]"
             data-testid="no-results"
           >
-            No snakes match your filters.
+            {t('snakeBrowser.noResults')}
           </p>
         ) : (
           <>
@@ -195,7 +195,7 @@ export default function SnakeBrowserPage() {
               className="mb-4 text-sm text-[#6B7280]"
               data-testid="result-count"
             >
-              {filtered.length} species
+              {filtered.length} {t('snakeBrowser.species')}
             </p>
 
             <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">

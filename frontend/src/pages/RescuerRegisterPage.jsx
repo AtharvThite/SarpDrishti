@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useTranslation } from "react-i18next";
 import {
   ChevronLeft,
   ChevronRight,
@@ -44,6 +45,7 @@ function Field({ label, children }) {
 }
 
 export default function RescuerRegisterPage() {
+  const { t } = useTranslation();
   const [step, setStep] = useState(1);
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -155,17 +157,15 @@ export default function RescuerRegisterPage() {
         </div>
 
         <h1 className="mt-6 font-display text-4xl font-bold text-[#1A3A2A]">
-          Registration submitted!
+          {t('register.successTitle')}
         </h1>
 
         <p className="mt-3 text-[#6B7280]">
-          Our team will verify your credentials
-          within 48 hours and contact you via
-          WhatsApp and email.
+          {t('register.successDesc')}
         </p>
 
         <p className="mt-1 text-sm text-[#6B7280]">
-          Reference: SD-
+          {t('register.reference')}: SD-
           {Math.random()
             .toString(36)
             .slice(2, 8)
@@ -182,11 +182,11 @@ export default function RescuerRegisterPage() {
     >
       <header className="mb-6">
         <p className="text-sm font-semibold uppercase tracking-wider text-[#E8A020]">
-          Rescuer Onboarding
+          {t('register.label')}
         </p>
 
         <h1 className="font-display text-4xl font-bold text-[#1A3A2A]">
-          Register as a Rescuer
+          {t('register.title')}
         </h1>
       </header>
 
@@ -230,10 +230,10 @@ export default function RescuerRegisterPage() {
           <div className="space-y-4">
             <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-[#1A3A2A]">
               <User size={18} />
-              Personal Info
+              {t('register.personalInfo')}
             </h2>
 
-            <Field label="Full Name *">
+            <Field label={t('register.fullName')}>
               <input
                 value={data.full_name}
                 onChange={(e) =>
@@ -246,7 +246,7 @@ export default function RescuerRegisterPage() {
               />
             </Field>
 
-            <Field label="Phone Number *">
+            <Field label={t('register.phone')}>
               <input
                 value={data.phone}
                 onChange={(e) =>
@@ -259,7 +259,7 @@ export default function RescuerRegisterPage() {
               />
             </Field>
 
-            <Field label="Email">
+            <Field label={t('register.email')}>
               <input
                 value={data.email}
                 onChange={(e) =>
@@ -274,7 +274,7 @@ export default function RescuerRegisterPage() {
 
             <div>
               <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
-                Districts Covered *
+                {t('register.districtsCovered')}
               </label>
 
               <div className="flex flex-wrap gap-2">
@@ -309,10 +309,10 @@ export default function RescuerRegisterPage() {
           <div className="space-y-4">
             <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-[#1A3A2A]">
               <FileText size={18} />
-              Credentials
+              {t('register.credentials')}
             </h2>
 
-            <Field label="Government ID Type">
+            <Field label={t('register.govIdType')}>
               <select
                 value={data.govt_id_type}
                 onChange={(e) =>
@@ -330,7 +330,7 @@ export default function RescuerRegisterPage() {
               </select>
             </Field>
 
-            <Field label="Government ID Number *">
+            <Field label={t('register.govIdNumber')}>
               <input
                 value={data.govt_id_number}
                 onChange={(e) =>
@@ -349,7 +349,7 @@ export default function RescuerRegisterPage() {
                 size={20}
               />
               <p className="mt-2 text-sm text-[#6B7280]">
-                Upload certificates
+                {t('register.uploadCertificates')}
               </p>
               <input
                 type="file"
@@ -363,12 +363,12 @@ export default function RescuerRegisterPage() {
           <div className="space-y-4">
             <h2 className="flex items-center gap-2 font-display text-xl font-semibold text-[#1A3A2A]">
               <MapPin size={18} />
-              Coverage & Availability
+              {t('register.coverageAvailability')}
             </h2>
 
             <div className="flex flex-col gap-2">
               <label className="text-xs font-semibold uppercase tracking-wider text-[#6B7280]">
-                Base Location *
+                {t('register.baseLocation')}
               </label>
               <div className="flex items-center gap-3">
                 <button
@@ -391,17 +391,17 @@ export default function RescuerRegisterPage() {
                   }}
                   className="rounded-lg border border-[#E5E0D2] bg-white px-4 py-2 text-sm font-semibold text-[#1A3A2A] hover:bg-[#F7F4EF]"
                 >
-                  Get Current Location
+                  {t('register.getCurrentLocation')}
                 </button>
                 {data.lat && data.lng && (
                   <span className="text-sm text-[#27AE60] font-medium flex items-center gap-1">
-                    <Check size={14} /> Set ({Number(data.lat).toFixed(4)}, {Number(data.lng).toFixed(4)})
+                    <Check size={14} /> {t('register.set')} ({Number(data.lat).toFixed(4)}, {Number(data.lng).toFixed(4)})
                   </span>
                 )}
               </div>
             </div>
 
-            <Field label="Service Radius">
+            <Field label={t('register.serviceRadius')}>
               <input
                 type="range"
                 min={5}
@@ -419,7 +419,7 @@ export default function RescuerRegisterPage() {
               />
             </Field>
 
-            <Field label="Availability Hours">
+            <Field label={t('register.availabilityHours')}>
               <input
                 value={
                   data.availability_hours
@@ -434,7 +434,7 @@ export default function RescuerRegisterPage() {
               />
             </Field>
 
-            <Field label="Bio">
+            <Field label={t('register.bio')}>
               <textarea
                 rows={4}
                 value={data.bio}
@@ -462,7 +462,7 @@ export default function RescuerRegisterPage() {
             className="inline-flex items-center gap-1 rounded-lg border-2 border-[#1A3A2A] px-4 py-2 text-sm font-semibold text-[#1A3A2A] disabled:opacity-40"
           >
             <ChevronLeft size={14} />
-            Back
+            {t('register.back')}
           </button>
 
           {step < 3 ? (
@@ -474,7 +474,7 @@ export default function RescuerRegisterPage() {
               }
               className="sd-btn-primary disabled:opacity-50"
             >
-              Next
+              {t('register.next')}
               <ChevronRight size={14} />
             </button>
           ) : (
@@ -485,8 +485,8 @@ export default function RescuerRegisterPage() {
               className="sd-btn-primary disabled:opacity-50"
             >
               {submitting
-                ? "Submitting..."
-                : "Submit Registration"}
+                ? t('register.submitting')
+                : t('register.submitRegistration')}
             </button>
           )}
         </div>

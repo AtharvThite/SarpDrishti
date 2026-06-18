@@ -2,17 +2,20 @@ import { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Siren } from "lucide-react";
 import logoImage from "../assets/logo.png";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "./LanguageSelector";
 
 const links = [
-  { to: "/", label: "Home" },
-  { to: "/identify", label: "Identify" },
-  { to: "/snakes", label: "Snakes" },
-  { to: "/rescuers", label: "Rescuers" },
-  { to: "/awareness", label: "Awareness" },
+  { to: "/", i18nKey: "home", defaultLabel: "Home" },
+  { to: "/identify", i18nKey: "identify", defaultLabel: "Identify" },
+  { to: "/snakes", i18nKey: "snakes", defaultLabel: "Snakes" },
+  { to: "/rescuers", i18nKey: "rescuers", defaultLabel: "Rescuers" },
+  { to: "/awareness", i18nKey: "awareness", defaultLabel: "Awareness" },
 ];
 
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
@@ -54,7 +57,7 @@ export default function Navbar() {
           <span
             className="font-display text-2xl font-bold bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] bg-clip-text text-transparent transition-all duration-300 ml-3"
           >
-            SarpDrishti
+            {t('nav.brand')}
           </span>
         </Link>
 
@@ -66,7 +69,7 @@ export default function Navbar() {
             <NavLink
               key={l.to}
               to={l.to}
-              data-testid={`nav-link-${l.label.toLowerCase()}`}
+              data-testid={`nav-link-${l.defaultLabel.toLowerCase()}`}
               className={({ isActive }) =>
                 `rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ${isActive
                   ? "bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] text-white shadow-md"
@@ -74,12 +77,16 @@ export default function Navbar() {
                 }`
               }
             >
-              {l.label}
+              {t(`nav.${l.i18nKey}`)}
             </NavLink>
           ))}
         </nav>
 
         <div className="flex items-center gap-2">
+          <div className="hidden sm:block">
+            <LanguageSelector />
+          </div>
+
           <Link
             to="/emergency"
             data-testid="emergency-btn-navbar"
@@ -87,7 +94,7 @@ export default function Navbar() {
             style={{ padding: "0.55rem 1.1rem", fontSize: 14 }}
           >
             <Siren size={16} />
-            Emergency
+            {t('nav.emergency')}
           </Link>
 
           <button
@@ -112,13 +119,13 @@ export default function Navbar() {
                 key={l.to}
                 to={l.to}
                 onClick={() => setOpen(false)}
-                data-testid={`mobile-nav-link-${l.label.toLowerCase()}`}
+                data-testid={`mobile-nav-link-${l.defaultLabel.toLowerCase()}`}
                 className={`rounded-lg px-3 py-3 text-base fade-up transition-all duration-300 ${location.pathname === l.to
                   ? "bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] text-white"
                   : "text-[#1c1c1c] hover:bg-black/5"
                   }`}
               >
-                {l.label}
+                {t(`nav.${l.i18nKey}`)}
               </Link>
             ))}
 
@@ -129,8 +136,11 @@ export default function Navbar() {
               className="sd-btn-danger mt-2 fade-up"
             >
               <Siren size={16} />
-              Emergency
+              {t('nav.emergency')}
             </Link>
+            <div className="mt-4 fade-up">
+              <LanguageSelector />
+            </div>
           </div>
         </div>
       )}
