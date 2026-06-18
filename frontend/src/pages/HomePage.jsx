@@ -17,6 +17,7 @@ import {
 
 import SnakeCard from "../components/SnakeCard";
 import LoadingSpinner from "../components/LoadingSpinner";
+import hero from "../assets/hero-img.png";
 
 const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
@@ -110,8 +111,8 @@ export default function HomePage() {
           }}
         />
 
-        <div className="mx-auto max-w-7xl px-4 py-28 lg:px-8 lg:py-36 relative z-10">
-          <div className="max-w-3xl">
+        <div className="mx-auto max-w-7xl px-4 py-28 lg:px-8 lg:py-36 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12">
+          <div className="max-w-2xl lg:pr-8">
             <span
               className="inline-flex items-center gap-2 rounded-full glass px-5 py-2 text-xs font-medium text-[#E8A020] shadow-lg fade-up"
             >
@@ -192,6 +193,24 @@ export default function HomePage() {
                 />
                 Available 24/7
               </span>
+            </div>
+          </div>
+
+          {/* Right Side Image */}
+          <div
+            className="hidden lg:flex lg:w-1/2 justify-center lg:justify-end relative fade-up"
+            style={{ animationDelay: "500ms" }}
+          >
+            <div className="relative w-full max-w-xl lg:max-w-2xl xl:max-w-3xl group lg:pr-8">
+              {/* Decorative background glow */}
+              <div className="absolute inset-0 bg-[#E8A020] blur-[160px] opacity-25 rounded-full scale-[1.5] lg:scale-[1.9] group-hover:opacity-40 transition-opacity duration-700" />
+
+              {/* The Image */}
+              <img
+                src={hero}
+                alt="AI Snake Scanner Interface"
+                className="relative z-10 w-full h-auto object-contain drop-shadow-2xl scale-[1.4] sm:scale-[1.7] lg:scale-[1.9] xl:scale-[2.0] hover:-translate-y-4 transition-transform duration-700 ease-out lg:-translate-x-4 lg:-translate-y-6"
+              />
             </div>
           </div>
         </div>
