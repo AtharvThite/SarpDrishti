@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Menu, X, Siren } from "lucide-react";
+import logoImage from "../assets/logo.png";
 
 const links = [
   { to: "/", label: "Home" },
@@ -10,24 +11,6 @@ const links = [
   { to: "/awareness", label: "Awareness" },
 ];
 
-const SnakeLogo = () => (
-  <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden>
-    <path
-      d="M5 22c2-4 4-6 7-6s5 3 8 3 5-3 7-7"
-      stroke="#E8A020"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      fill="none"
-    />
-    <circle cx="26" cy="11" r="1.6" fill="#1A3A2A" />
-    <path
-      d="M24 8c1-1 3-1 4 0"
-      stroke="#E8A020"
-      strokeWidth="2"
-      strokeLinecap="round"
-    />
-  </svg>
-);
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -42,11 +25,10 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-500 ${
-        scrolled
-          ? "glass-light shadow-lg"
-          : ""
-      }`}
+      className={`sticky top-0 z-50 w-full transition-all duration-500 ${scrolled
+        ? "glass-light shadow-lg"
+        : ""
+        }`}
       style={{
         background: scrolled
           ? undefined
@@ -61,20 +43,16 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
         <Link
           to="/"
-          className="flex items-center gap-2 group"
+          className="flex items-center gap-0 group"
           data-testid="logo-link"
         >
+          <img
+            src={logoImage}
+            alt="SarpDrishti Logo"
+            className="h-16 w-auto mix-blend-multiply transition-all duration-300 group-hover:scale-105 -ml-2"
+          />
           <span
-            className="grid h-9 w-9 place-items-center rounded-full transition-all duration-300 group-hover:shadow-lg group-hover:scale-110"
-            style={{
-              background: "linear-gradient(135deg, #1A3A2A, #2C5742)",
-            }}
-          >
-            <SnakeLogo />
-          </span>
-
-          <span
-            className="font-display text-xl font-bold bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] bg-clip-text text-transparent transition-all duration-300"
+            className="font-display text-2xl font-bold bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] bg-clip-text text-transparent transition-all duration-300 ml-3"
           >
             SarpDrishti
           </span>
@@ -90,10 +68,9 @@ export default function Navbar() {
               to={l.to}
               data-testid={`nav-link-${l.label.toLowerCase()}`}
               className={({ isActive }) =>
-                `rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ${
-                  isActive
-                    ? "bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] text-white shadow-md"
-                    : "text-[#1c1c1c] hover:bg-black/5 hover:text-[#1A3A2A]"
+                `rounded-lg px-4 py-2 text-sm font-medium transition-all duration-300 ${isActive
+                  ? "bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] text-white shadow-md"
+                  : "text-[#1c1c1c] hover:bg-black/5 hover:text-[#1A3A2A]"
                 }`
               }
             >
@@ -136,11 +113,10 @@ export default function Navbar() {
                 to={l.to}
                 onClick={() => setOpen(false)}
                 data-testid={`mobile-nav-link-${l.label.toLowerCase()}`}
-                className={`rounded-lg px-3 py-3 text-base fade-up transition-all duration-300 ${
-                  location.pathname === l.to
-                    ? "bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] text-white"
-                    : "text-[#1c1c1c] hover:bg-black/5"
-                }`}
+                className={`rounded-lg px-3 py-3 text-base fade-up transition-all duration-300 ${location.pathname === l.to
+                  ? "bg-gradient-to-r from-[#1A3A2A] to-[#2C5742] text-white"
+                  : "text-[#1c1c1c] hover:bg-black/5"
+                  }`}
               >
                 {l.label}
               </Link>
