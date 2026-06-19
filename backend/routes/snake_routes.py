@@ -1,5 +1,6 @@
 from flask import Blueprint, request, current_app
 from utils.response import success_response, error_response, paginated_response
+from utils.localization import apply_translation
 from middleware.auth import require_admin
 import re
 
@@ -10,6 +11,7 @@ def get_snakes():
     page = int(request.args.get("page", 1))
     limit = int(request.args.get("limit", 20))
     limit = min(limit, 100)
+    lang = request.args.get("lang", "en")
     
     query = {}
     
@@ -34,6 +36,7 @@ def get_snakes():
     cursor = current_app.db.snakes.find(query).skip(skip).limit(limit)
     snakes = []
     for doc in cursor:
+        doc = apply_translation(doc, lang)
         snakes.append({
             "slug": doc.get("slug"),
             "common_name": doc.get("common_name"),
@@ -51,10 +54,12 @@ def get_snakes():
 
 @snake_bp.route("/api/snakes/<slug>", methods=["GET"])
 def get_snake(slug):
+    lang = request.args.get("lang", "en")
     snake = current_app.db.snakes.find_one({"slug": slug})
     if not snake:
         return error_response("Snake not found", 404)
         
+    snake = apply_translation(snake, lang)
     snake["_id"] = str(snake["_id"])
     
     similar_slugs = snake.get("similar_species", [])
@@ -62,6 +67,7 @@ def get_snake(slug):
     if similar_slugs:
         sim_cursor = current_app.db.snakes.find({"slug": {"$in": similar_slugs}})
         for sim in sim_cursor:
+            sim = apply_translation(sim, lang)
             similar_species_data.append({
                 "slug": sim.get("slug"),
                 "common_name": sim.get("common_name"),

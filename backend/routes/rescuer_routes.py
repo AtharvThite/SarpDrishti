@@ -1,5 +1,6 @@
 from flask import Blueprint, request, current_app
 from utils.response import success_response, error_response
+from utils.localization import apply_translation
 from utils.validators import validate_phone, validate_email, validate_coordinates
 from middleware.auth import require_admin
 from datetime import datetime
@@ -12,6 +13,7 @@ def get_nearby_rescuers():
     lng = request.args.get("lng")
     radius_km = int(request.args.get("radius_km", 25))
     radius_km = min(radius_km, 100)
+    lang = request.args.get("lang", "en")
     available_only = request.args.get("available_only", "false").lower() == "true"
     
     if lat is None or lng is None or not validate_coordinates(lat, lng):
@@ -47,6 +49,7 @@ def get_nearby_rescuers():
     
     result = []
     for r in rescuers:
+        r = apply_translation(r, lang)
         phone = r.get("phone", "")
         masked = ""
         if phone and len(phone) >= 13:
@@ -78,6 +81,7 @@ def get_nearby_rescuers():
 @rescuer_bp.route("/api/rescuers", methods=["GET"])
 def get_rescuers():
     district = request.args.get("district")
+    lang = request.args.get("lang", "en")
     
     query = {"is_verified": True, "is_active": True}
     if district:
@@ -87,6 +91,7 @@ def get_rescuers():
     
     result = []
     for r in cursor:
+        r = apply_translation(r, lang)
         phone = r.get("phone", "")
         masked = ""
         if phone and len(phone) >= 13:
@@ -258,6 +263,7 @@ def add_review(id):
 
 @rescuer_bp.route("/api/rescuers/<id>", methods=["GET"])
 def get_rescuer(id):
+    lang = request.args.get("lang", "en")
     from bson import ObjectId
     try:
         obj_id = ObjectId(id)
@@ -268,6 +274,7 @@ def get_rescuer(id):
     if not r:
         return error_response("Rescuer not found", 404)
         
+    r = apply_translation(r, lang)
     phone = r.get("phone", "")
     masked = ""
     if phone and len(phone) >= 13:

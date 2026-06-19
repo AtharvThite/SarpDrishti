@@ -18,7 +18,7 @@ const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export default function SnakeDetailPage() {
   const { id } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [snake, setSnake] = useState(null);
   const [similar, setSimilar] = useState([]);
@@ -26,14 +26,14 @@ export default function SnakeDetailPage() {
 
   useEffect(() => {
     axios
-      .get(`${API}/snakes/${id}`)
+      .get(`${API}/snakes/${id}?lang=${i18n.language}`)
       .then((response) => {
         setSnake(response.data);
         setSimilar(response.data.similar_species_data || []);
         setActiveImg(0);
       })
       .catch(console.error);
-  }, [id]);
+  }, [id, i18n.language]);
 
   const galleryImages = snake?.images?.length 
     ? snake.images 

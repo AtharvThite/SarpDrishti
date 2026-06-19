@@ -4,6 +4,7 @@ import tempfile
 from datetime import datetime
 from flask import Blueprint, request, current_app
 from utils.response import success_response, error_response
+from utils.localization import apply_translation
 from ml.predictor import SnakePredictor
 
 ml_bp        = Blueprint("ml", __name__)
@@ -41,6 +42,7 @@ def identify_snake():
     """
 
     # ── 1. Validate image ────────────────────────────────────────────────
+    lang = request.args.get("lang", request.form.get("lang", "en"))
     if "image" not in request.files:
         return error_response(
             "No image provided. Send image as multipart/form-data "
@@ -89,6 +91,8 @@ def identify_snake():
                 f"Identified species not found in database. "
                 f"Please try again with a clearer photo.", 404
             )
+            
+        snake = apply_translation(snake, lang)
 
         # ── 5. Fetch similar species ─────────────────────────────────────
         similar = []
@@ -101,6 +105,9 @@ def identify_snake():
                     "_id": 0
                 }
             ))
+            
+        for s in similar:
+            s = apply_translation(s, lang)
 
         # ── 6. Log incident anonymously ──────────────────────────────────
         incident_id = None

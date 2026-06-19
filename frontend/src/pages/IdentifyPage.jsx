@@ -10,7 +10,7 @@ import FirstAidStep from "../components/FirstAidStep";
 const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export default function IdentifyPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const [preview, setPreview] = useState(location.state?.previewUrl || null);
   const [loading, setLoading] = useState(false);
@@ -36,6 +36,7 @@ export default function IdentifyPage() {
       const blob = await fetch(preview).then((r) => r.blob());
       const formData = new FormData();
       formData.append("image", blob, "upload.jpg");
+      formData.append("lang", i18n.language);
 
       const response = await axios.post(`${API}/identify`, formData);
       setResult(response.data.snake);

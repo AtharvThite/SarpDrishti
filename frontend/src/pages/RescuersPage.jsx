@@ -18,7 +18,7 @@ const RESCUE_STORIES = [
 const API = `${import.meta.env.VITE_BACKEND_URL}/api`;
 
 export default function RescuersPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [rescuers, setRescuers] = useState([]);
   const [district, setDistrict] = useState("");
   const [loading, setLoading] = useState(true);
@@ -38,9 +38,10 @@ export default function RescuersPage() {
       const response = await axios.get(
         `${API}/rescuers`,
         {
-          params: districtName
-            ? { district: districtName }
-            : {},
+          params: {
+             ...(districtName ? { district: districtName } : {}),
+             lang: i18n.language
+          }
         }
       );
 
@@ -57,7 +58,7 @@ export default function RescuersPage() {
 
   useEffect(() => {
     fetchRescuers();
-  }, []);
+  }, [i18n.language]);
 
   const useMyLocation = () => {
     if (!navigator.geolocation) {

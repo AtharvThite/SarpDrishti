@@ -18,7 +18,7 @@ const REGIONS = [
 ];
 
 export default function SnakeBrowserPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [snakes, setSnakes] = useState([]);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("all");
@@ -29,7 +29,7 @@ export default function SnakeBrowserPage() {
     setLoading(true);
 
     axios
-      .get(`${API}/snakes`)
+      .get(`${API}/snakes?limit=100&lang=${i18n.language}`)
       .then((response) => {
         setSnakes(response.data.snakes || []);
       })
@@ -37,7 +37,7 @@ export default function SnakeBrowserPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [i18n.language]);
 
   const filtered = useMemo(() => {
     return snakes.filter((snake) => {
