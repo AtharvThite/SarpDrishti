@@ -12,10 +12,15 @@ def get_model(model_path):
     global _model, _model_path
     if _model is None:
         try:
+            import os
+            os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
             import tensorflow as tf
+            tf.config.threading.set_inter_op_parallelism_threads(1)
+            tf.config.threading.set_intra_op_parallelism_threads(1)
+            
             from tensorflow.keras.models import load_model
             print(f"⏳ Loading snake model from {model_path}...")
-            _model      = load_model(model_path)
+            _model      = load_model(model_path, compile=False)
             _model_path = model_path
             print(f"✅ Snake model loaded successfully")
             print(f"   Input shape  : {_model.input_shape}")

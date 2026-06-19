@@ -24,6 +24,9 @@ def create_app():
     origins = [
         "http://localhost:5173",
         "http://localhost:3000",
+        "https://sarpdrishti-git-main-atharv-thites-projects.vercel.app",
+        "https://sarpdrishti-p93xpgxkk-atharv-thites-projects.vercel.app",
+        "https://sarpdrishti.vercel.app",
         frontend_url
     ]
     CORS(app, 
