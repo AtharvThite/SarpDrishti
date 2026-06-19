@@ -116,6 +116,13 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(ml_bp)
 
+    @app.route("/", methods=["GET"])
+    def index():
+        return jsonify({
+            "message": "Welcome to SarpDrishti API. The backend is running successfully!",
+            "health_check": "/api/health"
+        })
+
     @app.route("/api/health", methods=["GET"])
     def health_check():
         db_status = "disconnected"
