@@ -16,11 +16,6 @@ __pycache__/
 # Temporary Uploads
 temp_uploads/
 
-# ML Weights (Ignore large model files)
-ml/weights/*.keras
-ml/weights/*.h5
-ml/weights/*.hdf5
-
 # IDEs / Editor configurations
 .vscode/
 .idea/

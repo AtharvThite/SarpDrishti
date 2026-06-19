@@ -20,10 +20,11 @@ def create_app():
     app.config.from_object(Config)
 
     # Configure CORS (CRITICAL RULE #9)
+    frontend_url = os.environ.get("FRONTEND_URL", "https://sarpdrishti.vercel.app")
     origins = [
         "http://localhost:5173",
         "http://localhost:3000",
-        "https://sarpdrishti.vercel.app"
+        frontend_url
     ]
     CORS(app, 
          resources={r"/api/*": {"origins": origins}},
